@@ -1,0 +1,19 @@
+# System files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Dependencies and builds
+node_modules/
+dist/
+build/
+
+# Editors and local tooling
+.vscode/
+.idea/
+*.log
+.env
+.env.*
+
+# Claude Code personal settings
+.claude/settings.local.json

@@ -1,0 +1,50 @@
+{
+  "version": 1,
+  "contact": [
+    { "text": "+91-8764016235", "href": "" },
+    { "text": "pranjalg1605@gmail.com", "href": "mailto:pranjalg1605@gmail.com" },
+    { "text": "Portfolio Link", "href": "https://pranjalgupta.framer.website/" },
+    { "text": "LinkedIn Profile", "href": "http://www.linkedin.com/in/pranjal-gupta-34b140136" }
+  ],
+  "name": "PRANJAL GUPTA",
+  "title": "PRODUCT DESIGNER",
+  "summary": "<p>From paper sketches to market-ready products. With <b>2+ years of Saas experience</b>, I’m a Product Designer focused on <b>scaling 0→1 ventures</b> by blending empathetic UX with rigorous systems thinking.</p>",
+  "sections": [
+    {
+      "id": "skills",
+      "label": "SKILLS",
+      "layout": "two-column",
+      "html": "<ul><li>Figma</li><li>Photoshop</li><li>Illustrator</li><li>Miro</li><li>Framer</li><li>Wix Studio</li><li>Adobe XD</li></ul>"
+    },
+    {
+      "id": "work",
+      "label": "WORK EXPERIENCE",
+      "layout": "entries",
+      "html": "<h3>UI/UX DESIGNER</h3><h4>CutureX Entertainment Pvt. Ltd. | Sept 2023 - Present</h4><ul><li><b>Owned the end-to-end 0→1 Saas design process</b>, scaling the platform from 2 to <b>150+ clients</b> within the first year.</li><li><b>Built a scalable Design System from scratch</b>, standardizing typography and color schemes to streamline dev handoff.</li><li><b>Designed 20+ core modules</b> (15+ new, 8 revamped), optimizing user flows &amp; achieved a 40% reduction in average clicks.</li><li><b>Architected AI-driven interfaces</b>, including a 'Brand Bot' UI and automated competitive analysis tools, to transform complex data into empathetic, actionable user insights.</li><li><b>Directed end-to-end branding</b>, including 5+ Wix Studio websites and high-stakes pitch decks/Canva collateral for sales teams.</li></ul><h3>UI/UX INTERN</h3><h4>BLOSSOBIT | Feb 2023 - July 2023</h4><ul><li>Improved the user interface of an existing webapp.</li><li>Decreased time taken during registration and login process by 50% .</li><li>Created unique graphic design for clients.</li></ul><h3>UI/UX INTERN</h3><h4>Aamod IT Solutions | June 2022 - Aug 2022</h4><ul><li>Designed a news related mobile and webapp for a client.</li><li>Managed their social media account and created social media post for the company.</li></ul>"
+    },
+    {
+      "id": "education",
+      "label": "EDUCATION",
+      "layout": "entries",
+      "html": "<h3>WORLD UNIVERSITY OF DESIGN</h3><h4>Bachelor of Design</h4><h4>Product Design | 2019 - 2023</h4>"
+    }
+  ],
+  "hiddenKeywords": [
+    {
+      "group": "DESIGN SKILLS",
+      "items": ["UI DESIGN", "UX DESIGN", "PRODUCT DESIGN", "INTERACTION DESIGN", "USER-CENTERED DESIGN", "HUMAN-CENTERED DESIGN", "MOBILE-FIRST UX", "RESPONSIVE DESIGN", "ADAPTIVE DESIGN", "DASHBOARD UX", "ENTERPRISE UX", "END-TO-END EXPERIENCE DESIGN", "OMNICHANNEL UX", "UX FLOWS", "WIREFRAMING", "PROTOTYPING (LOW- & HIGH-FIDELITY)", "UI/UX DESIGN", "VISUAL HIERARCHY", "TYPOGRAPHY", "COLOR THEORY", "BRANDING & IDENTITY", "INFORMATION ARCHITECTURE", "JOURNEY MAPPING", "TASK FLOWS", "USER FLOWS", "INTERACTION PATTERNS DESIGN", "UI ANIMATION", "MICROINTERACTIONS", "MICROCOPY", "MULTI-DEVICE DESIGN", "CONVERSION-DRIVEN DESIGN", "UI AUDIT", "DESIGN DOCUMENTATION", "UX STORYTELLING"]
+    },
+    {
+      "group": "TOOLS & PLATFORMS",
+      "items": ["FIGMA", "FIGJAM", "SKETCH", "ADOBE XD", "ADOBE CREATIVE SUITE (PHOTOSHOP, ILLUSTRATOR)", "BALSAMIQ", "ZEPLIN", "INVISION", "FRAMER", "MAZE", "MIRO", "NOTION", "JIRA", "TRELLO", "HTML, CSS (BASIC UNDERSTANDING FOR HANDOFF)"]
+    },
+    {
+      "group": "METHODS & FRAMEWORKS",
+      "items": ["DESIGN THINKING", "DOUBLE DIAMOND PROCESS", "LEAN UX", "AGILE UX", "WATERFALL MODEL", "CONTINUOUS DISCOVERY", "MVP DESIGN", "A/B TESTING", "UX KPIS", "HEURISTIC EVALUATION", "USABILITY HEURISTICS", "ACCESSIBILITY TESTING", "WCAG 2.1", "WCAG AA COMPLIANCE", "CUSTOMER JOURNEY DESIGN", "SERVICE BLUEPRINTS", "SYSTEM THINKING", "PRODUCT-MARKET FIT (PMF)", "UX METRICS", "UX AUDITS", "FEATURE PRIORITIZATION", "COMPONENTIZATION", "DESIGN SPRINTS", "UX WRITING", "CONTENT STRATEGY", "ACCESSIBILITY AUDITS"]
+    },
+    {
+      "group": "SOFT SKILLS & COLLABORATION",
+      "items": ["STAKEHOLDER MANAGEMENT", "CROSS-FUNCTIONAL COLLABORATION", "DEVELOPER HANDOFF", "DESIGN OPS", "DESIGN GOVERNANCE", "UX CRITIQUE & FEEDBACK", "AFFINITY MAPPING", "PERSONA BUILDING", "STORYBOARDING", "IDEATION & BRAINSTORMING", "EMPATHY MAPPING", "UX RESEARCH", "USER INTERVIEWS", "COMPETITIVE ANALYSIS", "MARKET RESEARCH", "USABILITY TESTING", "DESIGN SYSTEM MANAGEMENT", "COLLABORATIVE DESIGN", "HANDOFF DOCUMENTATION"]
+    }
+  ]
+}
