@@ -41,6 +41,23 @@ version is "Pranjal Gupta — Resume" (https://claude.ai/artifact/AcDkY2RDcn3Ay5
   dash shows garbled; `.banner { display: flex }` overrides the `hidden` attribute, so an empty restore
   banner shows on load; a small black blob (likely the empty toast) sits near the bottom.
 
+## Running it locally
+
+- **Local link:** http://localhost:4321/ (redirects to `resume.html`).
+- **Pranjal starts it** by double-clicking `Open Pagecraft.cmd`, which runs `node tools/serve.cjs` and
+  opens the browser. **Claude starts it** with `node tools/serve.cjs` in the background.
+- `tools/serve.cjs` is a tiny server with no dependencies and no downloads (downloading `npx serve` was
+  blocked by the permission checker on 2026-11-22). It listens on this computer only (127.0.0.1), serves
+  only the project folder, hides dot-files (`.git`), and sends `charset=utf-8` — which fixes the garbled
+  title dash when served.
+
+## Going public — his rule (2026-11-22)
+
+**Stays private until Pagecraft has real multi-user support.** Pranjal will make it public only when
+there are multiple users, each with their own account and their own documents, and no user can see or
+reach another user's data. So before any public launch: sign-in, per-user storage, and data separation
+must exist and be tested. Until then: local link only, private GitHub project.
+
 ## Direction
 
 Grow from one resume into a general document editor: the layout and the content stay separate, so new
