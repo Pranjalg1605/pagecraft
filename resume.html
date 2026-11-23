@@ -542,6 +542,7 @@ button, select, input, textarea { font: inherit; color: inherit; }
     readOnly = true; dirty = false; clearTimeout(saveTimer);
     document.documentElement.classList.add('read-only');
     $('#tools').hidden = true;
+    updateHistoryButtons();
     if (state) render();
     setStatus('View only — you can read this resume but not change it');
   }
@@ -588,15 +589,18 @@ button, select, input, textarea { font: inherit; color: inherit; }
     const ed = el && el.closest('[contenteditable="true"]');
     return ed && paper.contains(ed) ? ed : null;
   }
-  document.addEventListener('selectionchange', () => {
+  // The browser reports a new selection a moment after it happens, so tools read the live selection first
+  // and only fall back to the remembered one when focus has moved into a box (link address, keywords).
+  function syncSelection() {
     const sel = getSelection();
     if (!sel.rangeCount) return;
     const r = sel.getRangeAt(0);
     const ed = editableOf(r.commonAncestorContainer);
     if (ed) { lastRange = r.cloneRange(); lastEditable = ed; }
-    updateToolbar();
-  });
+  }
+  document.addEventListener('selectionchange', () => { syncSelection(); updateToolbar(); });
   function restoreSelection() {
+    syncSelection();
     if (!lastEditable || !lastEditable.isConnected) return false;
     lastEditable.focus({ preventScroll: true });
     if (lastRange && lastRange.startContainer.isConnected) {
@@ -639,13 +643,122 @@ button, select, input, textarea { font: inherit; color: inherit; }
     if (!$('#toolbar').contains(e.target)) updateToolbar();
   });
 
+  /* ---------- undo and redo ----------
+     The browser's own undo misses changes made any other way than typing (moving, adding or deleting sections,
+     switching columns, links on contact details), stops working once the cursor leaves the text, and can undo the
+     wrong thing after one of those changes. So the editor keeps its own history: a copy of the page and the
+     cursor, taken just before every change. Typing is grouped into chunks the way Google Docs does it.
+     The hidden-keywords boxes keep their own undo, like any text box. */
+  const HIST = { u: [], r: [], typing: null };
+  const MAC = /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent);
+  let restoring = false;
+  function nodePath(root, node) {
+    const p = [];
+    while (node && node !== root) { const parent = node.parentNode; if (!parent) return null; p.unshift(Array.prototype.indexOf.call(parent.childNodes, node)); node = parent; }
+    return node === root ? p : null;
+  }
+  function nodeAt(root, path) { let n = root; for (const i of path) n = n && n.childNodes[i]; return n || null; }
+  function selPath() {
+    const s = getSelection(); if (!s.rangeCount) return null;
+    const r = s.getRangeAt(0); if (!paper.contains(r.startContainer) || !paper.contains(r.endContainer)) return null;
+    const a = nodePath(paper, r.startContainer), b = nodePath(paper, r.endContainer);
+    return a && b ? { a, ao: r.startOffset, b, bo: r.endOffset } : null;
+  }
+  function restoreSel(sp) {
+    if (!sp) return;
+    const a = nodeAt(paper, sp.a), b = nodeAt(paper, sp.b); if (!a || !b) return;
+    const len = n => n.nodeType === 3 ? n.data.length : n.childNodes.length;
+    const r = document.createRange();
+    try { r.setStart(a, Math.min(sp.ao, len(a))); r.setEnd(b, Math.min(sp.bo, len(b))); } catch (e) { return; }
+    const ed = editableOf(a); if (ed) ed.focus({ preventScroll: true });
+    const s = getSelection(); s.removeAllRanges(); s.addRange(r);
+    lastRange = r.cloneRange(); if (ed) lastEditable = ed;
+    const rect = r.getBoundingClientRect(), barBottom = $('#toolbar').getBoundingClientRect().bottom;
+    if (rect.height && (rect.top < barBottom || rect.bottom > innerHeight)) (ed || paper).scrollIntoView({ block: 'center' });
+  }
+  // The copy leaves out what the page redraws for itself (hidden keywords, the page-2 line, a half-confirmed delete),
+  // so those never count as a change of their own.
+  function snap() {
+    const c = paper.cloneNode(true);
+    $$('.kw', c).forEach(n => n.remove());
+    $$('.page-guide', c).forEach(n => n.removeAttribute('hidden'));
+    $$('.row-tools .confirm', c).forEach(n => { n.classList.remove('confirm'); n.textContent = 'Delete'; });
+    $$('[style=""]', c).forEach(n => n.removeAttribute('style'));
+    return { html: c.innerHTML, sel: selPath() };
+  }
+  const same = (a, b) => !!a && !!b && a.html === b.html;
+  // Call just BEFORE a change.
+  function record() {
+    if (restoring || readOnly || !state) return;
+    HIST.typing = null;
+    const s = snap();
+    if (!same(HIST.u[HIST.u.length - 1], s)) { HIST.u.push(s); if (HIST.u.length > 300) HIST.u.shift(); }
+    HIST.r.length = 0; updateHistoryButtons();
+  }
+  // Typing: a new step after a pause, when switching between typing and deleting, at a new word once a chunk
+  // is long enough, or on Enter. Clicking or arrowing elsewhere also starts a new step.
+  function typingStep(kind, data) {
+    const now = Date.now(), t = HIST.typing;
+    if (!t || t.kind !== kind || now - t.at > 900 || t.n >= 40 || (kind === 'ins' && data === ' ' && t.n >= 12)) {
+      record(); HIST.typing = { kind, at: now, n: 0 };
+    }
+    HIST.typing.at = now; HIST.typing.n += data ? data.length : 1;
+  }
+  function applySnap(s) {
+    restoring = true;
+    closeLink(false); pendingDelete = null; clearTimeout(pendingTimer);
+    paper.innerHTML = s.html;
+    placeKeywords();
+    restoreSel(s.sel);
+    restoring = false; HIST.typing = null;
+    markDirty(); updateToolbar(); updateHistoryButtons();
+  }
+  function undo() {
+    if (readOnly) return;
+    const cur = snap();
+    while (HIST.u.length) { const prev = HIST.u.pop(); if (same(prev, cur)) continue; HIST.r.push(cur); applySnap(prev); return; }
+    updateHistoryButtons(); toast('Nothing to undo.');
+  }
+  function redo() {
+    if (readOnly) return;
+    const cur = snap();
+    while (HIST.r.length) { const next = HIST.r.pop(); if (same(next, cur)) continue; HIST.u.push(cur); applySnap(next); return; }
+    updateHistoryButtons(); toast('Nothing to redo.');
+  }
+  function updateHistoryButtons() {
+    $('#b-undo').disabled = readOnly || !HIST.u.length;
+    $('#b-redo').disabled = readOnly || !HIST.r.length;
+  }
+  // Shortcuts work anywhere on the page, except inside a text box (link address, keywords), which keep their own undo.
+  document.addEventListener('keydown', e => {
+    if (!(e.ctrlKey || e.metaKey) || e.altKey) return;
+    const k = e.key.toLowerCase();
+    const isUndo = k === 'z' && !e.shiftKey, isRedo = (k === 'z' && e.shiftKey) || (k === 'y' && !e.shiftKey);
+    if (!isUndo && !isRedo) return;
+    if (e.target.matches && e.target.matches('textarea, input:not([type]), input[type="text"], input[type="search"], input[type="url"], input[type="number"]')) return;
+    e.preventDefault(); e.stopPropagation();
+    if (isUndo) undo(); else redo();
+  }, true);
+  // Every edit the browser makes on its own (typing, deleting, Enter, Ctrl+B/I/U) is recorded first,
+  // and Undo or Redo from the right-click menu goes to the same history.
+  paper.addEventListener('beforeinput', e => {
+    const t = e.inputType;
+    if (t === 'historyUndo' || t === 'historyRedo') { e.preventDefault(); if (t === 'historyUndo') undo(); else redo(); return; }
+    if (/^insert(Text|CompositionText|ReplacementText)$/.test(t)) typingStep('ins', e.data);
+    else if (/^delete(Content|Word|SoftLine|HardLine)(Backward|Forward)$/.test(t)) typingStep('del');
+    else record();
+  });
+  paper.addEventListener('mousedown', () => { HIST.typing = null; });
+  $('#b-undo').title = MAC ? 'Undo (⌘Z)' : 'Undo (Ctrl+Z)';
+  $('#b-redo').title = MAC ? 'Redo (⌘⇧Z)' : 'Redo (Ctrl+Y or Ctrl+Shift+Z)';
+
   /* ---------- toolbar actions ---------- */
   // Toolbar buttons must not take focus away from the text being edited.
   $('#tools').addEventListener('mousedown', e => { if (e.target.closest('button')) e.preventDefault(); });
   $('#b-download').addEventListener('mousedown', e => e.preventDefault());
-  function exec(cmd, val) { restoreSelection(); document.execCommand(cmd, false, val); }
-  $('#b-undo').addEventListener('click', () => { restoreSelection(); document.execCommand('undo'); });
-  $('#b-redo').addEventListener('click', () => { restoreSelection(); document.execCommand('redo'); });
+  function exec(cmd, val) { restoreSelection(); record(); document.execCommand(cmd, false, val); }
+  $('#b-undo').addEventListener('click', undo);
+  $('#b-redo').addEventListener('click', redo);
   $('#b-bold').addEventListener('click', () => { exec('bold'); updateToolbar(); });
   $('#b-italic').addEventListener('click', () => { exec('italic'); updateToolbar(); });
   $('#b-underline').addEventListener('click', () => { exec('underline'); updateToolbar(); });
@@ -653,6 +766,7 @@ button, select, input, textarea { font: inherit; color: inherit; }
   $('#block-style').addEventListener('change', e => {
     const v = e.target.value;
     if (!restoreSelection() || !isRich(lastEditable)) return;
+    record();
     const b = caretBlock();
     const inList = b && b.tagName === 'LI';
     if (v === 'ul') { if (!inList) document.execCommand('insertUnorderedList'); }
@@ -673,6 +787,7 @@ button, select, input, textarea { font: inherit; color: inherit; }
     return n && n.closest('a');
   }
   function openLink() {
+    syncSelection();
     const ed = lastEditable && lastEditable.isConnected ? lastEditable : null;
     if (!ed) { toast('Click into the text you want to link first.'); return; }
     if (ed.classList.contains('c-item')) {
@@ -708,6 +823,7 @@ button, select, input, textarea { font: inherit; color: inherit; }
     const url = safeHref(raw);
     if (raw && !url) { $('#link-err').hidden = false; return; }
     const t = linkTarget;
+    record();
     if (t.kind === 'contact') {
       t.el.dataset.href = url;
       t.el.classList.toggle('is-link', !!url);
@@ -746,6 +862,7 @@ button, select, input, textarea { font: inherit; color: inherit; }
   function addEntry(sec) {
     sec = sec || currentSection() || $('.section[data-id="work"]', paper) || $$('.section', paper).pop();
     if (!sec) { addSection(); return; }
+    record();
     const content = $('.content', sec);
     if (sec.classList.contains('two-col')) {
       let ul = $$('ul', content).pop();
@@ -762,6 +879,7 @@ button, select, input, textarea { font: inherit; color: inherit; }
     markDirty();
   }
   function addSection() {
+    record();
     const after = currentSection();
     const sec = { id: 's' + Date.now().toString(36), label: 'NEW SECTION', layout: 'entries', html: '<h3>TITLE</h3><h4>Details | Dates</h4><ul><li>Write here.</li></ul>' };
     const tpl = document.createElement('template');
@@ -782,9 +900,10 @@ button, select, input, textarea { font: inherit; color: inherit; }
     const sec = btn.closest('.section');
     const act = btn.dataset.act;
     if (act === 'add') addEntry(sec);
-    if (act === 'up' && sec.previousElementSibling) { sec.previousElementSibling.before(sec); markDirty(); }
-    if (act === 'down' && sec.nextElementSibling) { sec.nextElementSibling.after(sec); markDirty(); }
+    if (act === 'up' && sec.previousElementSibling) { record(); sec.previousElementSibling.before(sec); markDirty(); }
+    if (act === 'down' && sec.nextElementSibling) { record(); sec.nextElementSibling.after(sec); markDirty(); }
     if (act === 'cols') {
+      record();
       const two = sec.classList.toggle('two-col');
       btn.textContent = two ? '1 column' : '2 columns';
       $('[data-act="add"]', sec).textContent = two ? '+ Item' : '+ Entry';
@@ -798,19 +917,23 @@ button, select, input, textarea { font: inherit; color: inherit; }
         return;
       }
       pendingDelete = null; clearTimeout(pendingTimer);
-      const parent = sec.parentNode, next = sec.nextElementSibling;
       const label = plain($('.label-text', sec)) || 'Section';
       btn.textContent = 'Delete'; btn.classList.remove('confirm');
+      record();
+      const idx = $$('.section', paper).indexOf(sec), id = sec.dataset.id;
       sec.remove(); placeKeywords(); markDirty();
       toast('“' + label + '” deleted.', 'Undo', () => {
-        parent.insertBefore(sec, next && next.isConnected ? next : null);
+        // Already back (for example through Ctrl+Z)? Then there is nothing to do.
+        if ($$('.section', paper).some(s => s.dataset.id === id)) return;
+        record();
+        $('.sections', paper).insertBefore(sec, $$('.section', paper)[idx] || null);
         placeKeywords(); markDirty();
       });
     }
   });
 
   /* ---------- typing rules that keep the layout intact ----------
-     Nothing here rewrites the text behind the browser's back, so Undo and Redo stay reliable.
+     Each rule records an undo step before it changes anything, so Ctrl+Z steps back through it cleanly.
      Stray styling is neutralised by the guard rails in the paper CSS and dropped when saving. */
   function atEndOf(block) {
     const sel = getSelection();
@@ -826,6 +949,7 @@ button, select, input, textarea { font: inherit; color: inherit; }
     const ed = editableOf(e.target);
     if (!ed) return;
     const mod = e.ctrlKey || e.metaKey;
+    if (/^(Arrow|Home|End|Page)/.test(e.key)) HIST.typing = null;
     if (mod && e.key.toLowerCase() === 'k') { e.preventDefault(); openLink(); return; }
     if (ed.hasAttribute('data-single')) {
       if (e.key === 'Enter') { e.preventDefault(); return; }
@@ -836,6 +960,7 @@ button, select, input, textarea { font: inherit; color: inherit; }
       const b = caretBlock();
       if (b && b.tagName === 'H3' && atEndOf(b)) {
         e.preventDefault();
+        record();
         document.execCommand('insertParagraph');
         document.execCommand('formatBlock', false, 'h4');
         markDirty(); updateToolbar();
@@ -849,6 +974,7 @@ button, select, input, textarea { font: inherit; color: inherit; }
       if (e.inputType === 'insertText' && e.data === ' ') {
         const b = caretBlock();
         if (b && (b.tagName === 'P' || b.tagName === 'DIV') && /^[-*•][\s ]$/.test(b.textContent)) {
+          record(); // undo first returns the typed "- ", like Google Docs
           const r = document.createRange(); r.selectNodeContents(b);
           const s = getSelection(); s.removeAllRanges(); s.addRange(r);
           document.execCommand('delete');
@@ -866,6 +992,7 @@ button, select, input, textarea { font: inherit; color: inherit; }
     let text = (e.clipboardData && e.clipboardData.getData('text/plain')) || '';
     text = text.replace(/\r\n?/g, '\n');
     if (ed.hasAttribute('data-single')) text = text.replace(/\s*\n\s*/g, ' ');
+    record();
     document.execCommand('insertText', false, text);
   });
   paper.addEventListener('drop', e => { if (editableOf(e.target)) e.preventDefault(); });
@@ -912,7 +1039,7 @@ button, select, input, textarea { font: inherit; color: inherit; }
     try { stashed = normalize(JSON.parse(stashJson)); } catch (e) { return; }
     $('#banner-text').textContent = 'Your last edits did not save, because this resume was changed somewhere else at the same moment.';
     $('#banner').hidden = false;
-    $('#banner-yes').onclick = () => { state = stashed; render(); $('#banner').hidden = true; markDirty(); };
+    $('#banner-yes').onclick = () => { record(); state = stashed; render(); $('#banner').hidden = true; markDirty(); };
     $('#banner-no').onclick = () => { $('#banner').hidden = true; try { sessionStorage.removeItem(STASH); } catch (e) {} };
   }
   async function boot() {
@@ -936,7 +1063,7 @@ button, select, input, textarea { font: inherit; color: inherit; }
         else offerRestore(stash);
       }
     }
-    updateToolbar();
+    updateToolbar(); updateHistoryButtons();
     connect();
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(updatePageGuide);
   }

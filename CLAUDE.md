@@ -37,6 +37,14 @@ version is "Pranjal Gupta — Resume" (https://claude.ai/artifact/AcDkY2RDcn3Ay5
 - **Saving edits and the download button depend on the Claude artifact viewer** (`window.claude`). Outside
   it, they do nothing yet. Opened straight from disk, the content fails to load because the browser
   blocks reading `resume.json`; it works when served locally (for example `npx serve .`).
+- **Undo is the editor's own, never the browser's** (2026-11-23, Pranjal reported Ctrl+Z failing). The
+  browser's undo misses section moves, deletes, column switches and contact links, and stops once the cursor
+  leaves the text. `record()` takes a copy of the page and the cursor just before every change; typing is
+  grouped into chunks like Google Docs; Ctrl+Z / Ctrl+Y / Ctrl+Shift+Z work anywhere on the page except in
+  text boxes (link address, keyword boxes), which keep their own undo; right-click Undo uses the same history.
+  **Any new feature that changes the page must call `record()` first**, or it will be missing from undo.
+  Tools read the live selection first (`syncSelection()`), because the browser reports selections late.
+  The tested model came from the editor-directions mockup: https://claude.ai/artifact/GoJCcrEGYyjRFcggPLHpVg
 - Seen on the first standalone open (2026-11-22): no `<meta charset>` in the editor page, so the title's
   dash shows garbled; `.banner { display: flex }` overrides the `hidden` attribute, so an empty restore
   banner shows on load; a small black blob (likely the empty toast) sits near the bottom.
@@ -63,3 +71,10 @@ must exist and be tested. Until then: local link only, private GitHub project.
 Grow from one resume into a general document editor: the layout and the content stay separate, so new
 document types are new layouts plus new content files. First job: make the page run on its own (save
 and export without the artifact viewer).
+
+**Editing direction (2026-11-23): Notion is the main inspiration.** Four directions were mocked up and
+tested at https://claude.ai/artifact/GoJCcrEGYyjRFcggPLHpVg; tab D ("Notion-style") is his direction:
+no fixed formatting bar, a pop-up bar on selected words, a "/" block menu, a ⋮⋮ drag handle on every
+section, job and bullet, and a page-level Style menu. His must-haves: a wide font choice (Notion itself
+has only 3, so Pagecraft adds a library) and dragging whole blocks. Still open: page-wide fonts only, or
+per-word fonts too; and when to build D into this file.
