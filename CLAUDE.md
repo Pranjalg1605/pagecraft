@@ -34,9 +34,13 @@ version is "Pranjal Gupta — Resume" (https://claude.ai/artifact/AcDkY2RDcn3Ay5
   readable to applicant screening software.
 - Editing is done in place on the page, **the Notion way** (built 2026-11-23 from mockup tab D): no fixed
   formatting bar; a pop-up bar on selected words (Turn into, B/I/U/S, link, Notion colours, clear formatting);
-  a "/" block menu; a ⋮⋮ handle on every section, job entry (`.entry`, an editor-only wrapper around an h3
-  and what follows it, flattened on save) and bullet, with drag-to-move and a block menu (move, duplicate,
-  two columns, delete); a page-level Style menu (`style: {font, small}` in `resume.json`, applied as CSS
+  a "/" block menu; a ⋮⋮ handle on **every line** (h3, h4, p, li, hr in the summary and section text) as in
+  Notion — a job title's handle moves its whole job (`.entry`, an editor-only wrapper around an h3 and what
+  follows it, flattened on save) and a section label's handle moves the section — with drag-to-move and a
+  block menu (move, duplicate, two columns, divider style, delete). `placeLine()` keeps bullets in lists,
+  splits a list when another line lands inside it, and `mergeLists()` rejoins lists left side by side.
+  Dividers: `<hr>` (line), `<hr data-style="dotted">`, `<hr data-style="space">` (an empty gap; a faint
+  outline while editing, never printed); each is a 17px-tall block so it is easy to grab; a page-level Style menu (`style: {font, small}` in `resume.json`, applied as CSS
   variables on `.paper`, also carried into the Download). Contact items get a link-only pop-up bar.
   Colours are `<span data-tc|data-bg="name">` from Notion's palette, the only colours the guard rails let
   through. Saved HTML now keeps `<ol>`, `<s>`, `<hr>` and those colour spans. Strict style rules still stop

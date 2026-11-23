@@ -48,7 +48,11 @@
 .paper ul > li::before { content: ""; position: absolute; left: 6px; top: calc(var(--dot-top, 8.2px) * var(--scale)); width: 3.6px; height: 3.6px; border-radius: 50%; background: currentColor; }
 .paper ol > li { counter-increment: item; }
 .paper ol > li::before { content: counter(item) "."; position: absolute; left: 2px; top: 0; font-variant-numeric: tabular-nums; }
-.paper hr { border: 0; border-top: 1px solid var(--paper-rule); margin: 8px 0; }
+/* Dividers: each is a 17px-tall block (easy to grab and drag) with the mark drawn across its middle.
+   Line is the original rule; Dotted is lighter; Space is an empty gap that never prints. */
+.paper hr { display: block; border: 0; height: 17px; margin: 0; background: linear-gradient(var(--paper-rule), var(--paper-rule)) center / 100% 1px no-repeat; }
+.paper hr[data-style="dotted"] { background: radial-gradient(circle, var(--paper-rule) 0 1px, transparent 1.3px) 0 50% / 6px 4px repeat-x; }
+.paper hr[data-style="space"] { background: none; height: calc(19px * var(--scale)); }
 .paper h4 + h4 { margin-top: 3px; }
 .paper h4 + :is(ul, ol, p, div) { margin-top: 5.5px; }
 .paper h3 + :is(ul, ol, p, div) { margin-top: 4px; }
@@ -173,6 +177,8 @@ button, select, input, textarea { font: inherit; color: inherit; }
 .menu .mi .ico { width: 17px; text-align: center; font-weight: 600; flex: none; }
 .menu .mh { font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); padding: 8px 10px 4px; font-weight: 600; }
 .menu .sep { height: 1px; background: var(--line); margin: 4px 2px; }
+.menu-group { display: grid; gap: 2px; }
+.menu .mi.is-on::after { content: "✓"; margin-left: auto; color: var(--accent); font-weight: 700; }
 .swatches { display: flex; flex-wrap: wrap; gap: 6px; padding: 4px 10px 8px; }
 .n-sw { width: 28px; height: 28px; border-radius: 6px; border: 1px solid #D8D5CE; cursor: pointer; display: grid; place-items: center; font-weight: 600; font-size: 14px; color: var(--t, #37352F); background: var(--c, #FFFFFF); padding: 0; }
 .n-sw:hover { outline: 2px solid var(--accent-soft); outline-offset: 1px; }
@@ -224,8 +230,10 @@ button, select, input, textarea { font: inherit; color: inherit; }
 .paper [contenteditable]:focus { box-shadow: 0 0 0 4px var(--accent-soft); background: transparent; }
 .paper [data-ph]:empty::before { content: attr(data-ph); color: #A9A7A1; }
 .paper .content:empty::before { content: "Type here"; color: #A9A7A1; }
-.paper .content p:has(> br:only-child) { position: relative; }
-.paper .content p:has(> br:only-child)::before { content: "Type / for blocks"; position: absolute; color: #A9A7A1; pointer-events: none; }
+.paper :is(.content, .summary) p:has(> br:only-child) { position: relative; }
+.paper :is(.content, .summary) p:has(> br:only-child)::before { content: "Type / for blocks"; position: absolute; color: #A9A7A1; pointer-events: none; }
+/* While editing, a Space divider shows a faint outline so it can be found and grabbed; it never prints. */
+.paper hr[data-style="space"] { outline: 1px dashed rgba(122, 122, 120, .35); outline-offset: -4px; }
 .page-guide { position: absolute; left: -18px; right: -18px; top: 297mm; border-top: 1.5px dashed #C2552B; pointer-events: none; }
 .page-guide span { position: absolute; right: 18px; top: 4px; font: 600 11px/1 var(--ui); letter-spacing: 0; color: #C2552B; background: #FCFBF8; padding: 3px 6px; border-radius: 4px; }
 .read-only .paper [contenteditable]:hover { box-shadow: none; background: transparent; }
@@ -272,6 +280,7 @@ button, select, input, textarea { font: inherit; color: inherit; }
   @page { size: A4; margin: 0; }
   html, body { background: #FCFBF8 !important; padding: 0 !important; }
   body::before, .toolbar, .panel, .page-guide, .banner, .toast, .blk-handle, .drop-line, .float-bar, .menu, .popover { display: none !important; }
+  .paper hr[data-style="space"] { outline: none; }
   .desk { padding: 0 !important; }
   .zoom { zoom: 1 !important; margin: 0; }
   .zoom .paper { box-shadow: none; min-height: 296mm; }
@@ -340,6 +349,13 @@ button, select, input, textarea { font: inherit; color: inherit; }
   <button class="mi" type="button" data-bm="down"><svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>Move down</button>
   <button class="mi" type="button" data-bm="dup"><svg viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg>Duplicate</button>
   <button class="mi" type="button" data-bm="cols" id="bm-cols"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="7" height="14" rx="1.5"/><rect x="13" y="5" width="7" height="14" rx="1.5"/></svg><span id="bm-cols-label">Two columns</span></button>
+  <div class="menu-group" id="bm-div" hidden>
+    <div class="sep"></div>
+    <div class="mh">Divider style</div>
+    <button class="mi" type="button" data-bm="div-line"><span class="ico">—</span>Line</button>
+    <button class="mi" type="button" data-bm="div-dotted"><span class="ico">···</span>Dotted line</button>
+    <button class="mi" type="button" data-bm="div-space"><span class="ico">↕</span>Space</button>
+  </div>
   <div class="sep"></div>
   <button class="mi" type="button" data-bm="del"><svg viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>Delete</button>
 </div>
@@ -464,7 +480,7 @@ button, select, input, textarea { font: inherit; color: inherit; }
         return;
       }
       flush();
-      if (b === 'hr') { out += '<hr>'; return; }
+      if (b === 'hr') { const st = n.getAttribute('data-style'); out += st === 'dotted' || st === 'space' ? '<hr data-style="' + st + '">' : '<hr>'; return; }
       if (b === 'ul' || b === 'ol' || b === 'li') {
         const items = b === 'li' ? [n] : Array.from(n.childNodes);
         const listTag = b === 'ol' ? 'ol' : 'ul';
@@ -1177,27 +1193,96 @@ button, select, input, textarea { font: inherit; color: inherit; }
     markDirty();
   }
 
-  /* ---------- block handles: drag sections, jobs and bullets ---------- */
+  /* ---------- block handles: every line, every job and every section can be dragged ----------
+     Like Notion, each line is a block: a job title, a details line, a bullet, body text, a divider.
+     A job title is the parent of its job, so its handle moves the whole job (title, details and bullets);
+     every line inside the job has its own handle too. A section moves by the handle beside its label. */
   const handle = $('#blk-handle'), dropLine = $('#drop-line');
-  const KIND_SEL = { li: 'li', entry: '.entry', section: '.section' };
-  const KIND_NAME = { li: 'Bullet', entry: 'Job entry', section: 'Section' };
+  const LINE_SEL = 'li, h3, h4, p, hr';
+  const KIND_SEL = { entry: '.entry', section: '.section' };
   let hovered = null, hideT = 0, drag = null, menuBlock = null;
+  const inText = el => !!(el.closest('.content, .summary'));
+  function lineName(el) {
+    const t = el.tagName;
+    return t === 'LI' ? (el.parentElement.tagName === 'OL' ? 'Numbered item' : 'Bullet') : t === 'H3' ? 'Heading' : t === 'H4' ? 'Entry details' : t === 'HR' ? 'Divider' : 'Text';
+  }
+  const blockName = b => b.kind === 'section' ? 'Section' : b.kind === 'entry' ? 'Job entry' : lineName(b.el);
   function blockAt(t) {
     if (!t || !paper.contains(t) || readOnly) return null;
-    const li = t.closest('li'); if (li && paper.contains(li)) return { el: li, kind: 'li' };
-    const en = t.closest('.entry'); if (en) return { el: en, kind: 'entry' };
-    const sec = t.closest('.section'); if (sec) return { el: sec, kind: 'section' };
-    return null;
+    const sec = t.closest('.section');
+    if (sec && (t === sec || t.closest('.label'))) return { el: sec, kind: 'section' };
+    const line = t.closest(LINE_SEL);
+    if (line && paper.contains(line) && inText(line)) {
+      if (line.tagName === 'H3' && line.parentElement.classList.contains('entry')) return { el: line.parentElement, kind: 'entry' };
+      return { el: line, kind: 'line' };
+    }
+    return null; // a gap between lines: the handle that is showing stays a moment
   }
   function showHandle(b) {
     clearTimeout(hideT);
     if (hovered && hovered.el !== b.el) hovered.el.classList.remove('blk-hl');
     hovered = b;
     const r = b.el.getBoundingClientRect();
-    const top = b.kind === 'section' ? $('.label-text', b.el).getBoundingClientRect().top - 3 : r.top - 3;
+    let top = r.top - 3;
+    if (b.kind === 'section') top = $('.label-text', b.el).getBoundingClientRect().top - 3;
+    else if (b.el.tagName === 'HR') top = r.top + r.height / 2 - 12;
     handle.hidden = false;
     handle.style.left = (r.left + scrollX - 44) + 'px';
     handle.style.top = (top + scrollY) + 'px';
+  }
+  function candidates(b) {
+    if (b.kind !== 'line') return $$(KIND_SEL[b.kind], paper).filter(c => c !== b.el);
+    return $$(LINE_SEL, paper).filter(c => inText(c) && c !== b.el && !b.el.contains(c) && !c.contains(b.el));
+  }
+  const newList = tag => document.createElement(tag === 'OL' ? 'ol' : 'ul');
+  // Lists left side by side after a move join back into one.
+  function mergeLists() {
+    $$('ul + ul, ol + ol', paper).forEach(l => {
+      const prev = l.previousElementSibling;
+      if (!l.isConnected || !prev || prev.tagName !== l.tagName) return;
+      while (l.firstChild) prev.appendChild(l.firstChild);
+      l.remove();
+    });
+  }
+  // Puts a line before or after another line. A bullet keeps being a bullet (it gets a list of its own if it
+  // lands outside one); any other line dropped inside a list splits the list around it.
+  function placeLine(el, target, before) {
+    const fromList = el.tagName === 'LI' ? el.parentElement : null;
+    if (target.tagName === 'LI') {
+      const list = target.parentElement;
+      if (el.tagName === 'LI') list.insertBefore(el, before ? target : target.nextSibling);
+      else {
+        const first = before ? target : target.nextElementSibling;
+        list.after(el);
+        if (first) { const tail = newList(list.tagName); let n = first; while (n) { const nx = n.nextElementSibling; tail.appendChild(n); n = nx; } el.after(tail); }
+        if (!list.children.length) list.remove();
+      }
+    } else {
+      // Before a job title means before the whole job; after it means inside the job, under the title.
+      const ref = before && target.tagName === 'H3' && target.parentElement.classList.contains('entry') ? target.parentElement : target;
+      let node = el;
+      if (el.tagName === 'LI') { node = newList(fromList.tagName); node.appendChild(el); }
+      ref.parentElement.insertBefore(node, before ? ref : ref.nextSibling);
+    }
+    if (fromList && fromList.isConnected && !fromList.children.length) fromList.remove();
+    mergeLists();
+  }
+  function caretIn(el) {
+    const ed = editableOf(el); if (!ed) return;
+    ed.focus({ preventScroll: true });
+    const r = document.createRange(); r.setStart(el, 0); r.collapse(true);
+    const s = getSelection(); s.removeAllRanges(); s.addRange(r);
+    lastRange = r.cloneRange(); lastEditable = ed;
+  }
+  // Dividers: a thin line (the original), a lighter dotted line, or an empty space that never prints.
+  function insertDivider(style) {
+    syncSelection();
+    const hr = document.createElement('hr');
+    if (style !== 'line') hr.dataset.style = style;
+    const b = caretBlock();
+    if (b && b.tagName === 'P' && !b.textContent.trim()) { b.before(hr); caretIn(b); } // keep typing on the empty line below
+    else if (b) placeLine(hr, b, false);
+    else if (lastEditable && isRich(lastEditable)) lastEditable.appendChild(hr);
   }
   function hideHandle() { handle.hidden = true; if (hovered) hovered.el.classList.remove('blk-hl'); }
   function scheduleHide() { clearTimeout(hideT); hideT = setTimeout(() => { if (!drag && openMenuEl !== $('#blk-menu')) hideHandle(); }, 300); }
@@ -1227,9 +1312,17 @@ button, select, input, textarea { font: inherit; color: inherit; }
     const el = b.el, parent = el.parentElement;
     if (!el.isConnected) return;
     if (act === 'up' || act === 'down') {
-      const n = sib(el, act === 'up' ? -1 : 1, b.kind);
+      const dir = act === 'up' ? -1 : 1;
+      const n = b.kind === 'line' ? (dir < 0 ? el.previousElementSibling : el.nextElementSibling) : sib(el, dir, b.kind);
       if (!n) { toast(act === 'up' ? 'Already at the top.' : 'Already at the bottom.'); return; }
       record(); if (act === 'up') n.before(el); else n.after(el);
+      flash(el); afterBlockChange(); showHandle(b); return;
+    }
+    if (act.startsWith('div-') && el.tagName === 'HR') {
+      const style = act.slice(4);
+      if ((el.dataset.style || 'line') === style) return;
+      record();
+      if (style === 'line') el.removeAttribute('data-style'); else el.dataset.style = style;
       flash(el); afterBlockChange(); showHandle(b); return;
     }
     if (act === 'dup') {
@@ -1245,26 +1338,29 @@ button, select, input, textarea { font: inherit; color: inherit; }
     if (act === 'del') {
       record();
       const step = HIST.u[HIST.u.length - 1];
-      el.remove(); if (b.kind === 'li') cleanList(parent);
+      const name = blockName(b);
+      el.remove(); if (el.tagName === 'LI') cleanList(parent);
       hideHandle(); afterBlockChange();
-      toast(KIND_NAME[b.kind] + ' deleted.', 'Undo', () => {
+      toast(name + ' deleted.', 'Undo', () => {
         if (HIST.u[HIST.u.length - 1] === step) undo(); else toast('Press Ctrl+Z to step back to it.');
       });
     }
   }
+  // "+" adds a block below: a new bullet under a bullet, a new job under a job, a new section under a section,
+  // and an empty line (ready for "/") under anything else.
   function addBelow(b) {
     if (b.kind === 'section') { addSection(b.el); hideHandle(); return; }
     record();
-    if (b.kind === 'li') { const li = document.createElement('li'); li.textContent = 'New point'; b.el.after(li); selectContents(li); }
     if (b.kind === 'entry') { const en = makeEntry(); b.el.after(en); selectContents($('h3', en)); }
+    else if (b.el.tagName === 'LI') { const li = document.createElement('li'); li.textContent = 'New point'; b.el.after(li); selectContents(li); }
+    else { const p = document.createElement('p'); p.innerHTML = '<br>'; b.el.after(p); caretIn(p); }
     hideHandle(); markDirty();
   }
   $('.bh-add', handle).addEventListener('click', () => { if (hovered) addBelow(hovered); });
   $('.bh-grip', handle).addEventListener('mousedown', e => {
     if (!hovered || e.button !== 0) return;
     e.preventDefault();
-    drag = { ...hovered, x: e.clientX, y: e.clientY, moved: false, target: null, before: true,
-      cands: $$(KIND_SEL[hovered.kind], paper).filter(c => c !== hovered.el && !hovered.el.contains(c) && !c.contains(hovered.el)) };
+    drag = { ...hovered, x: e.clientX, y: e.clientY, moved: false, target: null, before: true, cands: candidates(hovered) };
   });
   document.addEventListener('mousemove', e => {
     if (!drag) return;
@@ -1291,18 +1387,20 @@ button, select, input, textarea { font: inherit; color: inherit; }
     document.body.classList.remove('dragging-blk'); d.el.classList.remove('is-dragging'); dropLine.hidden = true;
     if (!d.moved) {
       menuBlock = { el: d.el, kind: d.kind };
-      $('#blk-menu-title').textContent = KIND_NAME[d.kind];
+      $('#blk-menu-title').textContent = blockName(d);
       $('#bm-cols').hidden = d.kind !== 'section';
       $('#bm-cols-label').textContent = d.el.classList.contains('two-col') ? 'One column' : 'Two columns';
+      const isHr = d.el.tagName === 'HR';
+      $('#bm-div').hidden = !isHr;
+      if (isHr) $$('#bm-div [data-bm]').forEach(x => x.classList.toggle('is-on', x.dataset.bm === 'div-' + (d.el.dataset.style || 'line')));
       const r = $('.bh-grip', handle).getBoundingClientRect();
       openMenuAt($('#blk-menu'), r.left + scrollX, r.bottom + scrollY + 4, null);
       return;
     }
     if (d.target) {
-      const from = d.el.parentElement;
       record();
-      d.target.parentElement.insertBefore(d.el, d.before ? d.target : d.target.nextSibling);
-      if (d.kind === 'li') cleanList(from);
+      if (d.kind === 'line') placeLine(d.el, d.target, d.before);
+      else d.target.parentElement.insertBefore(d.el, d.before ? d.target : d.target.nextSibling);
       flash(d.el); afterBlockChange();
     }
   });
@@ -1368,7 +1466,9 @@ button, select, input, textarea { font: inherit; color: inherit; }
     { g: 'Basic blocks', id: 'h4', label: 'Entry details', sub: 'Company, dates, place', icon: 'h', keys: 'subheading details company dates h4' },
     { g: 'Basic blocks', id: 'ul', label: 'Bulleted list', sub: 'A simple bulleted list', icon: '•', keys: 'bullet list ul' },
     { g: 'Basic blocks', id: 'ol', label: 'Numbered list', sub: 'A list with numbers', icon: '1.', keys: 'numbered ordered list ol' },
-    { g: 'Basic blocks', id: 'hr', label: 'Divider', sub: 'A thin line between blocks', icon: '—', keys: 'divider line rule separator hr' },
+    { g: 'Dividers', id: 'hr-line', label: 'Divider', sub: 'A thin line, like the ones between sections', icon: '—', keys: 'divider line rule separator hr' },
+    { g: 'Dividers', id: 'hr-dotted', label: 'Dotted divider', sub: 'A lighter dotted line', icon: '···', keys: 'divider dotted dots line separator hr' },
+    { g: 'Dividers', id: 'hr-space', label: 'Space', sub: 'An empty gap that never prints', icon: '↕', keys: 'space gap spacer blank divider' },
     { g: 'Resume blocks', id: 'entry', label: 'Job entry', sub: 'Title, details and a first bullet', icon: '+', keys: 'entry job role experience position item' },
     { g: 'Resume blocks', id: 'section', label: 'Section', sub: 'A new labelled section', icon: '§', keys: 'section new block' }
   ];
@@ -1414,7 +1514,7 @@ button, select, input, textarea { font: inherit; color: inherit; }
       document.execCommand('delete');
       closeSlash(); syncSelection();
       if (item.id === 'p' || item.id === 'h3' || item.id === 'h4' || item.id === 'ul' || item.id === 'ol') turnInto(item.id);
-      else if (item.id === 'hr') document.execCommand('insertHorizontalRule');
+      else if (item.id.startsWith('hr-')) insertDivider(item.id.slice(3));
       else if (item.id === 'entry') addEntry();
       else if (item.id === 'section') addSection();
     } finally { restoring = false; }

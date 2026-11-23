@@ -16,8 +16,8 @@ Notion is the model. There is no fixed formatting bar; tools appear where you wo
 | To do this | Do this |
 |---|---|
 | Format words | Select them. A small bar pops up: turn into a heading or list, bold, italic, underline, strikethrough, link, colour, clear formatting. |
-| Add a block | Type `/` on a line and pick one: text, entry title, entry details, bulleted or numbered list, divider, job entry, section. |
-| Move a section, a job or a bullet | Hover it and drag the ⋮⋮ handle. Click the handle for Move up, Move down, Duplicate, Two columns (sections) and Delete. "+" adds one below. |
+| Add a block | Type `/` on a line and pick one: text, entry title, entry details, bulleted or numbered list, a divider (line, dotted, or an empty space that never prints), job entry, section. |
+| Move anything | Every line is a block: hover it and drag the ⋮⋮ handle. A job title's handle moves the whole job; a section label's handle moves the whole section. Click the handle for Move up, Move down, Duplicate, Delete, Two columns (sections) and the divider style (dividers). "+" adds one below. |
 | Change fonts or size | Style, in the top bar: Notion's Default, Serif and Mono, plus 24 fonts. Fonts apply to the whole page, not single words. |
 | Undo or redo | Ctrl+Z, and Ctrl+Y or Ctrl+Shift+Z. Works for every kind of change, anywhere on the page. |
 | Link a contact detail | Click it, then the link button in the small bar. |
