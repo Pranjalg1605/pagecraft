@@ -39,9 +39,15 @@ version is "Pranjal Gupta — Resume" (https://claude.ai/artifact/AcDkY2RDcn3Ay5
   follows it, flattened on save) and a section label's handle moves the section — with drag-to-move and a
   block menu (move, duplicate, two columns, divider style, delete). `placeLine()` keeps bullets in lists,
   splits a list when another line lands inside it, and `mergeLists()` rejoins lists left side by side.
-  The top of the page is draggable too (kind `head`): the contact row as one block, the name and the role,
-  reordering among themselves and around the summary; saved as `headerOrder` in `resume.json`; no
-  Duplicate, Delete or "+" for them. Order-aware margins sit in the paper CSS (default order = the PDF).
+  **Columns, the Notion way (his explicit model, 2026-11-23):** "the contact row is 4 columns; drag a block to
+  the side of another and it becomes a column". The top of the page is rows (`.hrow`) of blocks: each contact
+  item (`c0`…), the name, the role and the summary. Saved as `header: [["c0","c1","c2","c3"],["name"],…]`
+  (old `headerOrder` still reads). Drop inside a row's height = a column beside the others; drop in a gap =
+  a new row. Head blocks get Move left/right/up/down, no Duplicate, Delete or "+". Row gaps are order-aware
+  (`:has()` rules; default layout = the PDF). In section text, a line dropped near another line's right edge
+  (or just inside its left edge) makes `.cols > .col` columns (`placeBeside()`; a bullet stands for its list;
+  job titles never split); `tidyCols()` dissolves columns left with one column. Saved as
+  `<div class="cols"><div class="col">…</div>…</div>`. Never move a whole row when he means a column.
   Dividers: `<hr>` (line), `<hr data-style="dotted">`, `<hr data-style="space">` (an empty gap; a faint
   outline while editing, never printed); each is a 17px-tall block so it is easy to grab; a page-level Style menu (`style: {font, small}` in `resume.json`, applied as CSS
   variables on `.paper`, also carried into the Download). Contact items get a link-only pop-up bar.

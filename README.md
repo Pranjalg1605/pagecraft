@@ -17,7 +17,8 @@ Notion is the model. There is no fixed formatting bar; tools appear where you wo
 |---|---|
 | Format words | Select them. A small bar pops up: turn into a heading or list, bold, italic, underline, strikethrough, link, colour, clear formatting. |
 | Add a block | Type `/` on a line and pick one: text, entry title, entry details, bulleted or numbered list, a divider (line, dotted, or an empty space that never prints), job entry, section. |
-| Move anything | Every line is a block: hover it and drag the ⋮⋮ handle. A job title's handle moves the whole job; a section label's handle moves the whole section. At the top of the page, the contact row, your name and your role can be reordered too (for example, contact details under your role). Click the handle for Move up, Move down, Duplicate, Delete, Two columns (sections) and the divider style (dividers). "+" adds one below. |
+| Move anything | Every line is a block: hover it and drag the ⋮⋮ handle. A job title's handle moves the whole job; a section label's handle moves the whole section. At the top of the page, each contact item, your name and your role is a block of its own. Click the handle for Move up, Move down, Duplicate, Delete, Two columns (sections) and the divider style (dividers). "+" adds one below. |
+| Make columns | The Notion way. At the top of the page, drop a block inside another row to sit beside it as a column (for example, your email beside your name), or in the gap between rows to give it its own line. In the text, drop a line near the right edge of another line and they sit side by side; drag one back out and the columns dissolve. |
 | Change fonts or size | Style, in the top bar: Notion's Default, Serif and Mono, plus 24 fonts. Fonts apply to the whole page, not single words. |
 | Undo or redo | Ctrl+Z, and Ctrl+Y or Ctrl+Shift+Z. Works for every kind of change, anywhere on the page. |
 | Link a contact detail | Click it, then the link button in the small bar. |
