@@ -39,6 +39,9 @@ version is "Pranjal Gupta — Resume" (https://claude.ai/artifact/AcDkY2RDcn3Ay5
   follows it, flattened on save) and a section label's handle moves the section — with drag-to-move and a
   block menu (move, duplicate, two columns, divider style, delete). `placeLine()` keeps bullets in lists,
   splits a list when another line lands inside it, and `mergeLists()` rejoins lists left side by side.
+  The top of the page is draggable too (kind `head`): the contact row as one block, the name and the role,
+  reordering among themselves and around the summary; saved as `headerOrder` in `resume.json`; no
+  Duplicate, Delete or "+" for them. Order-aware margins sit in the paper CSS (default order = the PDF).
   Dividers: `<hr>` (line), `<hr data-style="dotted">`, `<hr data-style="space">` (an empty gap; a faint
   outline while editing, never printed); each is a 17px-tall block so it is easy to grab; a page-level Style menu (`style: {font, small}` in `resume.json`, applied as CSS
   variables on `.paper`, also carried into the Download). Contact items get a link-only pop-up bar.

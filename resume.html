@@ -29,6 +29,12 @@
   font-family: var(--f-contact); font-size: calc(12px * var(--scale)); line-height: calc(16px * var(--scale)); letter-spacing: .058em; color: var(--paper-soft); }
 .paper .c-item { white-space: nowrap; color: inherit; text-decoration: none; min-width: 2ch; }
 .paper .c-item.is-link { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 2px; }
+/* Spacing for the top of the page. The usual order (contact, name, role, summary) matches the PDF exactly;
+   when the pieces are dragged into another order, the rules below keep the gaps deliberate. */
+.paper > :is(.contact, .name, .title, .summary):first-child { margin-top: 0; }
+.paper > .contact:not(:first-child) { margin-top: 16px; }
+.paper > .title + .name, .paper > .summary + .name { margin-top: 14px; }
+.paper > .contact + .title, .paper > .summary + .title { margin-top: 16px; }
 .paper .name { margin: 38.25px 0 0 -3.8px; font-family: var(--f-head); font-size: calc(38.67px * var(--scale)); line-height: calc(46px * var(--scale)); letter-spacing: .1em; font-weight: 400; }
 .paper .title { margin-top: 8.8px; font-family: var(--f-head); font-size: calc(16.01px * var(--scale)); line-height: calc(20px * var(--scale)); letter-spacing: .0775em; font-weight: 400; }
 .paper .summary { margin-top: 19px; }
@@ -239,6 +245,7 @@ button, select, input, textarea { font: inherit; color: inherit; }
 .read-only .paper [contenteditable]:hover { box-shadow: none; background: transparent; }
 /* Block handles: "+" adds a block below, the six dots drag it or open its menu. They sit over the paper, which is always light. */
 .blk-handle { position: absolute; z-index: 45; display: flex; gap: 1px; }
+.blk-handle.no-add .bh-add { visibility: hidden; }
 .blk-handle button { width: 20px; height: 24px; border: 0; border-radius: 4px; background: transparent; color: #A3A29E; cursor: pointer; display: grid; place-items: center; padding: 0; }
 .blk-handle button:hover { background: rgba(55, 53, 47, .08); color: #55534E; }
 .blk-handle .bh-grip { cursor: grab; }
@@ -356,7 +363,7 @@ button, select, input, textarea { font: inherit; color: inherit; }
     <button class="mi" type="button" data-bm="div-dotted"><span class="ico">···</span>Dotted line</button>
     <button class="mi" type="button" data-bm="div-space"><span class="ico">↕</span>Space</button>
   </div>
-  <div class="sep"></div>
+  <div class="sep" id="bm-del-sep"></div>
   <button class="mi" type="button" data-bm="del"><svg viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>Delete</button>
 </div>
 <div class="float-bar" id="float-bar" role="toolbar" aria-label="Format selected text" hidden>
@@ -547,6 +554,15 @@ button, select, input, textarea { font: inherit; color: inherit; }
   }
 
   /* ---------- data ---------- */
+  // The top of the page (contact row, name, role, summary) can be reordered; any piece missing from a saved
+  // order is added back in its usual place.
+  const HEAD_KEYS = ['contact', 'name', 'title', 'summary'];
+  function headerOrderOf(v) {
+    const order = Array.isArray(v) ? [...new Set(v.filter(k => HEAD_KEYS.includes(k)))] : [];
+    HEAD_KEYS.forEach(k => { if (!order.includes(k)) order.splice(HEAD_KEYS.indexOf(k), 0, k); });
+    return order;
+  }
+  const headKey = el => el.classList.contains('contact') ? 'contact' : HEAD_KEYS.includes(el.dataset.field) ? el.dataset.field : null;
   function normalize(d) {
     d = d && typeof d === 'object' ? d : {};
     const str = v => typeof v === 'string' ? v : '';
@@ -563,7 +579,8 @@ button, select, input, textarea { font: inherit; color: inherit; }
       hiddenKeywords: (Array.isArray(d.hiddenKeywords) ? d.hiddenKeywords : []).map(g => ({
         group: str(g && g.group), items: (Array.isArray(g && g.items) ? g.items : []).map(str).filter(Boolean)
       })),
-      style: { font: fontInfo(st.font) ? st.font : 'default', small: st.small === true }
+      style: { font: fontInfo(st.font) ? st.font : 'default', small: st.small === true },
+      headerOrder: headerOrderOf(d.headerOrder)
     };
   }
 
@@ -606,10 +623,13 @@ button, select, input, textarea { font: inherit; color: inherit; }
       return c.href ? '<a class="c-item is-link" href="' + esc(c.href) + '">' + esc(c.text) + '</a>' : '<span class="c-item">' + esc(c.text) + '</span>';
     }).join('');
     const kw = keywordsHtml(s.hiddenKeywords), host = kwHost(s.sections);
-    return '<div class="contact">' + contact + '</div>' +
-      '<h1 class="name" data-field="name"' + single + ' data-ph="YOUR NAME">' + esc(s.name) + '</h1>' +
-      '<div class="title" data-field="title"' + single + ' data-ph="ROLE">' + esc(s.title) + '</div>' +
-      '<div class="summary" data-field="summary"' + rich + '>' + sanitizeHtml(s.summary) + '</div>' +
+    const head = {
+      contact: '<div class="contact">' + contact + '</div>',
+      name: '<h1 class="name" data-field="name"' + single + ' data-ph="YOUR NAME">' + esc(s.name) + '</h1>',
+      title: '<div class="title" data-field="title"' + single + ' data-ph="ROLE">' + esc(s.title) + '</div>',
+      summary: '<div class="summary" data-field="summary"' + rich + '>' + sanitizeHtml(s.summary) + '</div>'
+    };
+    return s.headerOrder.map(k => head[k]).join('') +
       '<div class="sections">' + s.sections.map((sec, i) => sectionHtml(sec, editable, i === host, kw)).join('') + '</div>' +
       (editable ? '<div class="page-guide" contenteditable="false" hidden><span>Page 2 starts here</span></div>' : '');
   }
@@ -649,7 +669,8 @@ button, select, input, textarea { font: inherit; color: inherit; }
         html: cleanBlocks($('.content', sec))
       })),
       hiddenKeywords: collectKeywords(),
-      style: { font: pageStyle.font, small: !!pageStyle.small }
+      style: { font: pageStyle.font, small: !!pageStyle.small },
+      headerOrder: headerOrderOf(Array.from(paper.children).map(headKey).filter(Boolean))
     };
   }
 
@@ -1199,16 +1220,20 @@ button, select, input, textarea { font: inherit; color: inherit; }
      every line inside the job has its own handle too. A section moves by the handle beside its label. */
   const handle = $('#blk-handle'), dropLine = $('#drop-line');
   const LINE_SEL = 'li, h3, h4, p, hr';
-  const KIND_SEL = { entry: '.entry', section: '.section' };
+  const KIND_SEL = { entry: '.entry', section: '.section', head: '.contact, [data-field="name"], [data-field="title"], [data-field="summary"]' };
+  const HEAD_NAME = { contact: 'Contact details', name: 'Name', title: 'Role', summary: 'Summary' };
   let hovered = null, hideT = 0, drag = null, menuBlock = null;
   const inText = el => !!(el.closest('.content, .summary'));
   function lineName(el) {
     const t = el.tagName;
     return t === 'LI' ? (el.parentElement.tagName === 'OL' ? 'Numbered item' : 'Bullet') : t === 'H3' ? 'Heading' : t === 'H4' ? 'Entry details' : t === 'HR' ? 'Divider' : 'Text';
   }
-  const blockName = b => b.kind === 'section' ? 'Section' : b.kind === 'entry' ? 'Job entry' : lineName(b.el);
+  const blockName = b => b.kind === 'section' ? 'Section' : b.kind === 'entry' ? 'Job entry' : b.kind === 'head' ? HEAD_NAME[headKey(b.el)] : lineName(b.el);
   function blockAt(t) {
     if (!t || !paper.contains(t) || readOnly) return null;
+    // The top of the page: the contact row (as one block), the name and the role.
+    const head = t.closest('.contact, [data-field="name"], [data-field="title"]');
+    if (head && head.parentElement === paper) return { el: head, kind: 'head' };
     const sec = t.closest('.section');
     if (sec && (t === sec || t.closest('.label'))) return { el: sec, kind: 'section' };
     const line = t.closest(LINE_SEL);
@@ -1225,13 +1250,15 @@ button, select, input, textarea { font: inherit; color: inherit; }
     const r = b.el.getBoundingClientRect();
     let top = r.top - 3;
     if (b.kind === 'section') top = $('.label-text', b.el).getBoundingClientRect().top - 3;
-    else if (b.el.tagName === 'HR') top = r.top + r.height / 2 - 12;
+    else if (b.el.tagName === 'HR' || b.kind === 'head') top = r.top + r.height / 2 - 12;
+    // The top of the page has no "+": there is always exactly one contact row, one name and one role.
+    handle.classList.toggle('no-add', b.kind === 'head');
     handle.hidden = false;
     handle.style.left = (r.left + scrollX - 44) + 'px';
     handle.style.top = (top + scrollY) + 'px';
   }
   function candidates(b) {
-    if (b.kind !== 'line') return $$(KIND_SEL[b.kind], paper).filter(c => c !== b.el);
+    if (b.kind !== 'line') return $$(KIND_SEL[b.kind], paper).filter(c => c !== b.el && (b.kind !== 'head' || c.parentElement === paper));
     return $$(LINE_SEL, paper).filter(c => inText(c) && c !== b.el && !b.el.contains(c) && !c.contains(b.el));
   }
   const newList = tag => document.createElement(tag === 'OL' ? 'ol' : 'ul');
@@ -1311,6 +1338,7 @@ button, select, input, textarea { font: inherit; color: inherit; }
   function blockAction(b, act) {
     const el = b.el, parent = el.parentElement;
     if (!el.isConnected) return;
+    if (b.kind === 'head' && (act === 'dup' || act === 'del')) return;
     if (act === 'up' || act === 'down') {
       const dir = act === 'up' ? -1 : 1;
       const n = b.kind === 'line' ? (dir < 0 ? el.previousElementSibling : el.nextElementSibling) : sib(el, dir, b.kind);
@@ -1349,6 +1377,7 @@ button, select, input, textarea { font: inherit; color: inherit; }
   // "+" adds a block below: a new bullet under a bullet, a new job under a job, a new section under a section,
   // and an empty line (ready for "/") under anything else.
   function addBelow(b) {
+    if (b.kind === 'head') return;
     if (b.kind === 'section') { addSection(b.el); hideHandle(); return; }
     record();
     if (b.kind === 'entry') { const en = makeEntry(); b.el.after(en); selectContents($('h3', en)); }
@@ -1390,7 +1419,8 @@ button, select, input, textarea { font: inherit; color: inherit; }
       $('#blk-menu-title').textContent = blockName(d);
       $('#bm-cols').hidden = d.kind !== 'section';
       $('#bm-cols-label').textContent = d.el.classList.contains('two-col') ? 'One column' : 'Two columns';
-      const isHr = d.el.tagName === 'HR';
+      const isHr = d.el.tagName === 'HR', isHead = d.kind === 'head';
+      ['[data-bm="dup"]', '[data-bm="del"]', '#bm-del-sep'].forEach(s => { $(s, $('#blk-menu')).hidden = isHead; });
       $('#bm-div').hidden = !isHr;
       if (isHr) $$('#bm-div [data-bm]').forEach(x => x.classList.toggle('is-on', x.dataset.bm === 'div-' + (d.el.dataset.style || 'line')));
       const r = $('.bh-grip', handle).getBoundingClientRect();
