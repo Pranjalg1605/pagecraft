@@ -32,8 +32,17 @@ version is "Pranjal Gupta — Resume" (https://claude.ai/artifact/AcDkY2RDcn3Ay5
   summary, a list of sections (each with a layout: `two-column` or `entries`, and its HTML), and
   `hiddenKeywords`: keyword groups printed in the page colour so they are invisible on paper but stay
   readable to applicant screening software.
-- Editing is done in place on the page. Strict style rules stop pasted or merged text from drifting off
-  the design.
+- Editing is done in place on the page, **the Notion way** (built 2026-11-23 from mockup tab D): no fixed
+  formatting bar; a pop-up bar on selected words (Turn into, B/I/U/S, link, Notion colours, clear formatting);
+  a "/" block menu; a ⋮⋮ handle on every section, job entry (`.entry`, an editor-only wrapper around an h3
+  and what follows it, flattened on save) and bullet, with drag-to-move and a block menu (move, duplicate,
+  two columns, delete); a page-level Style menu (`style: {font, small}` in `resume.json`, applied as CSS
+  variables on `.paper`, also carried into the Download). Contact items get a link-only pop-up bar.
+  Colours are `<span data-tc|data-bg="name">` from Notion's palette, the only colours the guard rails let
+  through. Saved HTML now keeps `<ol>`, `<s>`, `<hr>` and those colour spans. Strict style rules still stop
+  pasted or merged text from drifting off the design.
+- The old fixed toolbar (style select, B/I/U, link, clear, + Entry, + Section) and the hover row tools on
+  sections were replaced by the pieces above; every one of their actions still exists there.
 - **Saving edits and the download button depend on the Claude artifact viewer** (`window.claude`). Outside
   it, they do nothing yet. Opened straight from disk, the content fails to load because the browser
   blocks reading `resume.json`; it works when served locally (for example `npx serve .`).
@@ -44,10 +53,13 @@ version is "Pranjal Gupta — Resume" (https://claude.ai/artifact/AcDkY2RDcn3Ay5
   text boxes (link address, keyword boxes), which keep their own undo; right-click Undo uses the same history.
   **Any new feature that changes the page must call `record()` first**, or it will be missing from undo.
   Tools read the live selection first (`syncSelection()`), because the browser reports selections late.
+  The cursor is stored as (editable index, character offsets), not node paths, so it survives a redraw.
+  The copy also holds the page style and the hidden keywords. An action that changes nothing is taken back
+  out and keeps Redo. Typing groups break on Tab and focus changes; IME composition counts once.
   The tested model came from the editor-directions mockup: https://claude.ai/artifact/GoJCcrEGYyjRFcggPLHpVg
-- Seen on the first standalone open (2026-11-22): no `<meta charset>` in the editor page, so the title's
-  dash shows garbled; `.banner { display: flex }` overrides the `hidden` attribute, so an empty restore
-  banner shows on load; a small black blob (likely the empty toast) sits near the bottom.
+- Fixed 2026-11-23: a global `[hidden] { display: none !important }` stops the restore banner and the
+  toast showing empty. Opened straight from disk the title dash can still look garbled (no charset); the
+  local server sends one, so it never shows there.
 
 ## Running it locally
 
@@ -76,5 +88,5 @@ and export without the artifact viewer).
 tested at https://claude.ai/artifact/GoJCcrEGYyjRFcggPLHpVg; tab D ("Notion-style") is his direction:
 no fixed formatting bar, a pop-up bar on selected words, a "/" block menu, a ⋮⋮ drag handle on every
 section, job and bullet, and a page-level Style menu. His must-haves: a wide font choice (Notion itself
-has only 3, so Pagecraft adds a library) and dragging whole blocks. Still open: page-wide fonts only, or
-per-word fonts too; and when to build D into this file.
+has only 3, so Pagecraft adds a library) and dragging whole blocks. Built into this file on 2026-11-23.
+Still open: page-wide fonts only (built), or per-word fonts too (not asked yet).

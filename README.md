@@ -6,22 +6,31 @@ A document editor for print-ready pages. It starts with resumes and will grow in
 
 | File | What it is |
 |---|---|
-| `resume.html` | The editor: an A4 copy of the Canva resume, editable in place, with a print-to-PDF export. |
-| `resume.json` | The resume's words, kept apart from the layout so the same layout can hold different content. |
+| `resume.html` | The editor: an A4 copy of the Canva resume, edited in place the way Notion works, with a print-to-PDF export. |
+| `resume.json` | The resume's words and page style, kept apart from the layout so the same layout can hold different content. |
 
-## Known limits of this first version
+## How editing works
+
+Notion is the model. There is no fixed formatting bar; tools appear where you work.
+
+| To do this | Do this |
+|---|---|
+| Format words | Select them. A small bar pops up: turn into a heading or list, bold, italic, underline, strikethrough, link, colour, clear formatting. |
+| Add a block | Type `/` on a line and pick one: text, entry title, entry details, bulleted or numbered list, divider, job entry, section. |
+| Move a section, a job or a bullet | Hover it and drag the ⋮⋮ handle. Click the handle for Move up, Move down, Duplicate, Two columns (sections) and Delete. "+" adds one below. |
+| Change fonts or size | Style, in the top bar: Notion's Default, Serif and Mono, plus 24 fonts. Fonts apply to the whole page, not single words. |
+| Undo or redo | Ctrl+Z, and Ctrl+Y or Ctrl+Shift+Z. Works for every kind of change, anywhere on the page. |
+| Link a contact detail | Click it, then the link button in the small bar. |
+
+## Known limits
 
 The page was first built to run inside Claude's artifact viewer, which handles saving and downloads for it.
 
 - **Opened on its own, it does not save edits or download yet.** Those two features rely on that viewer.
 - **Opened by double-clicking `resume.html`, the content does not load.** Browsers block a page from
   reading a neighbouring file that way. Use **Open Pagecraft.cmd** instead (see below).
-- **Small glitches show outside the viewer.** An empty notice bar sits above the page and a small black
-  blob sits near the bottom: the notice bar's styling overrides its own "hidden" switch. Opened straight
-  from disk, the dash in the header title also shows garbled, because the page never declares its text
-  encoding; the local link below fixes that one.
 
-Making it run on its own is the first piece of work.
+Making it save and download on its own is the next piece of work.
 
 ## Open it on your computer
 

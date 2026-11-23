@@ -7,59 +7,88 @@
 
 <style id="paper-css">
 /* The paper: an A4 copy of the Canva resume. It keeps one fixed look in both themes, like printed paper.
-   Measurements come from the original PDF (px at 96 dpi). */
+   Measurements come from the original PDF (px at 96 dpi). The Style menu changes the fonts and the size
+   for the whole page through the variables below; at their defaults the page matches the PDF exactly. */
 .paper {
   --paper: #FCFBF8; --paper-ink: #444440; --paper-soft: #737373; --paper-rule: #7A7A78;
   --f-paper: "Montserrat", "Helvetica Neue", Arial, sans-serif;
+  --f-head: "Montserrat", "Helvetica Neue", Arial, sans-serif;
   --f-contact: "Jost", "Futura", "Century Gothic", sans-serif;
+  --scale: 1; --w-bold: 500; --track: .05em;
   position: relative; box-sizing: border-box;
   width: 210mm; min-height: 297mm;
   padding: 36px 83.5px 34px 75.5px;
   background: var(--paper); color: var(--paper-ink);
-  font-family: var(--f-paper); font-size: 12px; line-height: 19px; letter-spacing: .05em;
+  font-family: var(--f-paper); font-size: calc(12px * var(--scale)); line-height: calc(19px * var(--scale)); letter-spacing: var(--track);
   font-kerning: normal; text-align: left;
   -webkit-print-color-adjust: exact; print-color-adjust: exact;
   -webkit-box-decoration-break: clone; box-decoration-break: clone;
 }
 .paper *, .paper *::before { box-sizing: border-box; }
 .paper .contact { display: flex; justify-content: space-between; gap: 12px; padding-left: 7.7px;
-  font-family: var(--f-contact); font-size: 12px; line-height: 16px; letter-spacing: .058em; color: var(--paper-soft); }
+  font-family: var(--f-contact); font-size: calc(12px * var(--scale)); line-height: calc(16px * var(--scale)); letter-spacing: .058em; color: var(--paper-soft); }
 .paper .c-item { white-space: nowrap; color: inherit; text-decoration: none; min-width: 2ch; }
 .paper .c-item.is-link { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 2px; }
-.paper .name { margin: 38.25px 0 0 -3.8px; font-size: 38.67px; line-height: 46px; letter-spacing: .1em; font-weight: 400; }
-.paper .title { margin-top: 8.8px; font-size: 16.01px; line-height: 20px; letter-spacing: .0775em; font-weight: 400; }
+.paper .name { margin: 38.25px 0 0 -3.8px; font-family: var(--f-head); font-size: calc(38.67px * var(--scale)); line-height: calc(46px * var(--scale)); letter-spacing: .1em; font-weight: 400; }
+.paper .title { margin-top: 8.8px; font-family: var(--f-head); font-size: calc(16.01px * var(--scale)); line-height: calc(20px * var(--scale)); letter-spacing: .0775em; font-weight: 400; }
 .paper .summary { margin-top: 19px; }
 .paper .sections { margin-top: 20.4px; }
 .paper .section { display: grid; grid-template-columns: 217.5px minmax(0, 1fr); align-items: baseline;
   border-top: 1px solid var(--paper-rule); padding: 21px 0 28.8px; }
 .paper .section:last-child { padding-bottom: 0; }
 .paper .label { position: relative; padding-right: 16px; }
-.paper .label-text { font-size: 13.34px; line-height: 18px; letter-spacing: .075em; font-weight: 400; }
+.paper .label-text { font-family: var(--f-head); font-size: calc(13.34px * var(--scale)); line-height: calc(18px * var(--scale)); letter-spacing: .075em; font-weight: 400; }
 .paper .content { min-width: 0; padding-right: 12.5px; }
 .paper .summary p, .paper .summary div, .paper .content p, .paper .content div { margin: 0; }
-.paper h3 { margin: 0; font-size: 14.67px; line-height: 18px; letter-spacing: .035em; font-weight: 400; break-after: avoid; }
-.paper h4 { margin: 0; font-size: 12px; line-height: 19px; font-weight: 500; break-after: avoid; }
-.paper ul { list-style: none; margin: 0; padding: 0; }
+.paper h3 { margin: 0; font-family: var(--f-head); font-size: calc(14.67px * var(--scale)); line-height: calc(18px * var(--scale)); letter-spacing: .035em; font-weight: 400; break-after: avoid; }
+.paper h4 { margin: 0; font-size: calc(12px * var(--scale)); line-height: calc(19px * var(--scale)); font-weight: var(--w-bold); break-after: avoid; }
+.paper ul, .paper ol { list-style: none; margin: 0; padding: 0; }
+.paper ol { counter-reset: item; }
 .paper li { position: relative; padding-left: 20.4px; break-inside: avoid; }
-.paper li::before { content: ""; position: absolute; left: 6px; top: var(--dot-top, 8.2px); width: 3.6px; height: 3.6px; border-radius: 50%; background: currentColor; }
+.paper ul > li::before { content: ""; position: absolute; left: 6px; top: calc(var(--dot-top, 8.2px) * var(--scale)); width: 3.6px; height: 3.6px; border-radius: 50%; background: currentColor; }
+.paper ol > li { counter-increment: item; }
+.paper ol > li::before { content: counter(item) "."; position: absolute; left: 2px; top: 0; font-variant-numeric: tabular-nums; }
+.paper hr { border: 0; border-top: 1px solid var(--paper-rule); margin: 8px 0; }
 .paper h4 + h4 { margin-top: 3px; }
-.paper h4 + ul, .paper h4 + p, .paper h4 + div { margin-top: 5.5px; }
-.paper h3 + ul, .paper h3 + p, .paper h3 + div { margin-top: 4px; }
-.paper .content > * + h3 { margin-top: 19.5px; }
-.paper p + p, .paper p + ul, .paper ul + p, .paper ul + ul, .paper div + ul, .paper ul + div, .paper p + h4, .paper ul + h4 { margin-top: 6px; }
-.paper b, .paper strong { font-weight: 500; }
+.paper h4 + :is(ul, ol, p, div) { margin-top: 5.5px; }
+.paper h3 + :is(ul, ol, p, div) { margin-top: 4px; }
+.paper .content > * + h3, .paper .content > * + .entry { margin-top: 19.5px; }
+.paper :is(p, ul, ol, div) + :is(p, ul, ol, h4) { margin-top: 6px; }
+.paper b, .paper strong { font-weight: var(--w-bold); }
 .paper i, .paper em { font-style: italic; }
+.paper s { text-decoration: line-through; }
 .paper a { color: inherit; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 2px; }
 .paper .two-col .content ul { columns: 2; column-gap: 0; width: 331.8px; }
 /* Guard rails: the browser sometimes carries stray styling along when lines are merged or split.
    These rules make every piece of text follow the design anyway, so the layout cannot drift. */
 .paper :is(.content, .summary) :is(span, font) { font: inherit !important; letter-spacing: inherit !important; color: inherit !important; background: none !important; text-decoration: inherit !important; vertical-align: baseline !important; }
-.paper :is(.content, .summary) :is(p, div, li, ul) { font-family: var(--f-paper) !important; font-size: 12px !important; font-weight: 400 !important; font-style: normal !important; line-height: 19px !important; letter-spacing: .05em !important; color: var(--paper-ink) !important; background: none !important; text-align: left !important; }
-.paper .content h3 { font-family: var(--f-paper) !important; font-size: 14.67px !important; font-weight: 400 !important; font-style: normal !important; line-height: 18px !important; letter-spacing: .035em !important; color: var(--paper-ink) !important; background: none !important; text-align: left !important; }
-.paper .content h4 { font-family: var(--f-paper) !important; font-size: 12px !important; font-weight: 500 !important; font-style: normal !important; line-height: 19px !important; letter-spacing: .05em !important; color: var(--paper-ink) !important; background: none !important; text-align: left !important; }
-.paper :is(.content, .summary) :is(b, strong) { font-weight: 500 !important; }
+.paper :is(.content, .summary) :is(p, div, li, ul, ol) { font-family: var(--f-paper) !important; font-size: calc(12px * var(--scale)) !important; font-weight: 400 !important; font-style: normal !important; line-height: calc(19px * var(--scale)) !important; letter-spacing: var(--track) !important; color: var(--paper-ink) !important; background: none !important; text-align: left !important; }
+.paper .content h3 { font-family: var(--f-head) !important; font-size: calc(14.67px * var(--scale)) !important; font-weight: 400 !important; font-style: normal !important; line-height: calc(18px * var(--scale)) !important; letter-spacing: .035em !important; color: var(--paper-ink) !important; background: none !important; text-align: left !important; }
+.paper .content h4 { font-family: var(--f-paper) !important; font-size: calc(12px * var(--scale)) !important; font-weight: var(--w-bold) !important; font-style: normal !important; line-height: calc(19px * var(--scale)) !important; letter-spacing: var(--track) !important; color: var(--paper-ink) !important; background: none !important; text-align: left !important; }
+.paper :is(.content, .summary) :is(b, strong) { font-weight: var(--w-bold) !important; }
 .paper :is(.content, .summary) :is(i, em) { font-style: italic !important; }
-.paper :is(.content, .summary) :is(b, strong, i, em, u, a) { font-size: inherit !important; font-family: inherit !important; letter-spacing: inherit !important; color: inherit !important; background: none !important; }
+.paper :is(.content, .summary) :is(b, strong, i, em, u, s, a) { font-size: inherit !important; font-family: inherit !important; letter-spacing: inherit !important; color: inherit !important; background: none !important; }
+/* Colours from the pop-up bar: Notion's palette, the only colours the design allows. */
+.paper :is(.content, .summary) span[data-tc="default"] { color: var(--paper-ink) !important; }
+.paper :is(.content, .summary) span[data-tc="gray"] { color: #787774 !important; }
+.paper :is(.content, .summary) span[data-tc="brown"] { color: #9F6B53 !important; }
+.paper :is(.content, .summary) span[data-tc="orange"] { color: #D9730D !important; }
+.paper :is(.content, .summary) span[data-tc="yellow"] { color: #CB912F !important; }
+.paper :is(.content, .summary) span[data-tc="green"] { color: #448361 !important; }
+.paper :is(.content, .summary) span[data-tc="blue"] { color: #337EA9 !important; }
+.paper :is(.content, .summary) span[data-tc="purple"] { color: #9065B0 !important; }
+.paper :is(.content, .summary) span[data-tc="pink"] { color: #C14C8A !important; }
+.paper :is(.content, .summary) span[data-tc="red"] { color: #D44C47 !important; }
+.paper :is(.content, .summary) span[data-bg="default"] { background: none !important; }
+.paper :is(.content, .summary) span[data-bg="gray"] { background: #F1F1EF !important; }
+.paper :is(.content, .summary) span[data-bg="brown"] { background: #F4EEEE !important; }
+.paper :is(.content, .summary) span[data-bg="orange"] { background: #FBECDD !important; }
+.paper :is(.content, .summary) span[data-bg="yellow"] { background: #FBF3DB !important; }
+.paper :is(.content, .summary) span[data-bg="green"] { background: #EDF3EC !important; }
+.paper :is(.content, .summary) span[data-bg="blue"] { background: #E7F3F8 !important; }
+.paper :is(.content, .summary) span[data-bg="purple"] { background: #F6F3F9 !important; }
+.paper :is(.content, .summary) span[data-bg="pink"] { background: #FAF1F5 !important; }
+.paper :is(.content, .summary) span[data-bg="red"] { background: #FDEBEC !important; }
 /* Keywords kept from the original file: in the page colour, so they print invisibly but stay readable to screening software. */
 .paper .kw { position: absolute; left: 0; top: 22px; width: 200px; font-size: 1.4px; line-height: 1.87px; letter-spacing: 0;
   color: var(--paper); white-space: nowrap; overflow: hidden; pointer-events: none; user-select: none; }
@@ -68,7 +97,8 @@
 </style>
 
 <style>
-/* Layout: a quiet desk with one A4 sheet centred under a pinned formatting bar, the way a document editor works. */
+/* Layout: a quiet desk with one A4 sheet under a slim pinned bar. Formatting appears where you work, the way
+   Notion does it: a small bar over selected words, a "/" menu for blocks, and a drag handle beside every block. */
 :root {
   --desk: #E7E5E0; --bar: #FBFAF8; --ink: #262624; --muted: #6A6965; --line: #D8D5CE;
   --hover: #EEECE7; --press: #E2DFD8; --accent: #2E5E8C; --accent-ink: #FFFFFF; --accent-soft: rgba(46, 94, 140, .14);
@@ -89,49 +119,95 @@
   --danger: #F0A49C; --ok: #93CFA6; --sheet-shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 12px 32px rgba(0, 0, 0, .45);
   color-scheme: dark;
 }
+/* Anything switched off with the hidden attribute stays off, whatever display a component sets
+   (this is what showed an empty notice bar and a black blob before). */
+[hidden] { display: none !important; }
 body { background: var(--desk); color: var(--ink); font-family: var(--ui); font-size: 14px; }
 body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 30; background: var(--bar); }
 button, select, input, textarea { font: inherit; color: inherit; }
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
-/* Formatting bar */
+/* The pinned bar */
 .toolbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: var(--bar); border-bottom: 1px solid var(--line);
   padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
 .bar-inner { display: flex; align-items: center; gap: 8px 16px; flex-wrap: wrap; padding-block: 8px; max-width: 1100px; margin: 0 auto; }
 .doc-id { display: flex; flex-direction: column; min-width: 0; margin-right: auto; }
 .doc-name { font-weight: 600; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.doc-sub { display: flex; flex-wrap: wrap; gap: 2px 10px; align-items: center; }
 .status { font-size: 12px; color: var(--muted); }
 .status.is-ok { color: var(--ok); }
 .status.is-warn { color: var(--danger); }
-.tools { display: flex; align-items: center; gap: 4px; overflow-x: auto; max-width: 100%; scrollbar-width: thin; }
-.grp { display: flex; align-items: center; gap: 2px; padding-right: 6px; margin-right: 2px; border-right: 1px solid var(--line); flex: none; }
-.grp:last-child { border-right: 0; }
+.fit { font-size: 12px; color: var(--ok); display: inline-flex; align-items: center; gap: 5px; }
+.fit::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+.fit.is-over { color: var(--danger); }
+.hints { display: flex; flex-wrap: wrap; gap: 6px; font-size: 12px; color: var(--muted); }
+.hints span { border: 1px solid var(--line); border-radius: 999px; padding: 3px 9px; white-space: nowrap; }
+.hints kbd { font: 600 11px var(--ui); color: var(--ink); }
+.tools { display: flex; align-items: center; gap: 4px; }
 .tb { height: 32px; min-width: 32px; padding: 0 8px; border: 0; border-radius: 6px; background: transparent; cursor: pointer;
   display: inline-flex; align-items: center; justify-content: center; gap: 6px; font-size: 13px; white-space: nowrap; }
 .tb:hover { background: var(--hover); }
-.tb:active, .tb[aria-pressed="true"] { background: var(--press); }
+.tb:active, .tb[aria-pressed="true"], .tb[aria-expanded="true"] { background: var(--press); }
 .tb[aria-pressed="true"] { color: var(--accent); }
 .tb:disabled { opacity: .38; cursor: default; background: transparent; }
-.tb svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.tb svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; flex: none; }
 .tb .glyph { font-size: 15px; line-height: 1; }
-.style-select { height: 32px; border: 1px solid var(--line); border-radius: 6px; background: var(--bar); padding: 0 8px; font-size: 13px; cursor: pointer; }
-.style-select:disabled { opacity: .45; cursor: default; }
+.tb .caret { width: 12px; height: 12px; margin-left: -2px; }
+.tb.text-tb { padding: 0 10px; }
 .primary { height: 34px; padding: 0 14px; border-radius: 8px; border: 1px solid var(--accent); background: var(--accent); color: var(--accent-ink);
   font-weight: 600; font-size: 13px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
 .primary:hover { filter: brightness(1.08); }
 .primary svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ghost { height: 32px; padding: 0 12px; border-radius: 6px; border: 1px solid var(--line); background: transparent; cursor: pointer; font-size: 13px;
+  display: inline-flex; align-items: center; gap: 6px; }
+.ghost:hover { background: var(--hover); }
+.ghost[aria-expanded="true"] { background: var(--press); }
 
-/* Link box */
-.popover { position: absolute; z-index: 40; top: calc(100% + 6px); left: 0; width: min(360px, calc(100vw - 32px));
-  background: var(--bar); border: 1px solid var(--line); border-radius: 10px; box-shadow: var(--sheet-shadow); padding: 12px; }
+/* Menus, the link box and the pop-up bar */
+.menu, .popover { position: absolute; z-index: 47; background: var(--bar); border: 1px solid var(--line); border-radius: 10px; box-shadow: var(--sheet-shadow); padding: 6px; }
+.menu { min-width: 220px; display: grid; gap: 2px; }
+.menu .mi { display: flex; align-items: center; gap: 10px; height: 34px; padding: 0 10px; border: 0; border-radius: 6px; background: transparent; cursor: pointer; font-size: 13px; text-align: left; width: 100%; }
+.menu .mi:hover { background: var(--hover); }
+.menu .mi svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+.menu .mi .ico { width: 17px; text-align: center; font-weight: 600; flex: none; }
+.menu .mh { font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); padding: 8px 10px 4px; font-weight: 600; }
+.menu .sep { height: 1px; background: var(--line); margin: 4px 2px; }
+.swatches { display: flex; flex-wrap: wrap; gap: 6px; padding: 4px 10px 8px; }
+.n-sw { width: 28px; height: 28px; border-radius: 6px; border: 1px solid #D8D5CE; cursor: pointer; display: grid; place-items: center; font-weight: 600; font-size: 14px; color: var(--t, #37352F); background: var(--c, #FFFFFF); padding: 0; }
+.n-sw:hover { outline: 2px solid var(--accent-soft); outline-offset: 1px; }
+.popover { width: min(360px, calc(100vw - 32px)); padding: 12px; }
 .popover label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 6px; }
-.popover input { width: 100%; height: 34px; border: 1px solid var(--line); border-radius: 6px; background: var(--desk); padding: 0 10px; }
+.popover input { width: 100%; height: 34px; border: 1px solid var(--line); border-radius: 6px; background: var(--desk); padding: 0 10px; box-sizing: border-box; }
 .popover .row { display: flex; gap: 8px; margin-top: 10px; justify-content: flex-end; align-items: center; }
 .popover .err { color: var(--danger); font-size: 12px; margin-top: 6px; }
-.ghost { height: 32px; padding: 0 12px; border-radius: 6px; border: 1px solid var(--line); background: transparent; cursor: pointer; font-size: 13px; }
-.ghost:hover { background: var(--hover); }
 .popover .open-link { margin-right: auto; font-size: 12px; color: var(--accent); max-width: 50%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.float-bar { position: absolute; z-index: 46; display: flex; align-items: center; gap: 2px; padding: 4px; background: var(--bar);
+  border: 1px solid var(--line); border-radius: 8px; box-shadow: var(--sheet-shadow); }
+.float-bar .tb { height: 28px; min-width: 28px; }
+.float-bar.link-only .fb-text { display: none; }
+.fsep { width: 1px; align-self: stretch; background: var(--line); margin: 2px 3px; }
+.slash { width: 290px; max-height: 340px; overflow-y: auto; }
+.slash .mi { height: auto; padding: 6px 8px; }
+.slash .mi[aria-selected="true"] { background: var(--hover); }
+.slash .icon { width: 34px; height: 34px; border: 1px solid var(--line); border-radius: 6px; display: grid; place-items: center; background: var(--bar); font-weight: 600; font-size: 13px; flex: none; }
+.slash .mi-text { display: grid; gap: 1px; }
+.slash .mi-sub { font-size: 11.5px; color: var(--muted); }
+.empty-note { padding: 10px; color: var(--muted); font-size: 13px; }
+.style-menu { width: 300px; }
+.ag-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; padding: 2px 6px 6px; }
+.ag { border: 1px solid var(--line); border-radius: 8px; background: transparent; cursor: pointer; padding: 8px 4px; display: grid; gap: 2px; justify-items: center; }
+.ag:hover { background: var(--hover); }
+.ag .ag-a { font-size: 24px; line-height: 1.15; }
+.ag .ag-n { font-size: 11px; color: var(--muted); }
+.ag[aria-checked="true"], .font-opt[aria-checked="true"] { border-color: var(--accent); background: var(--accent-soft); }
+.style-menu input[type="search"] { margin: 0 6px 6px; width: calc(100% - 12px); height: 32px; border: 1px solid var(--line); border-radius: 6px; background: var(--desk); padding: 0 10px; box-sizing: border-box; }
+.font-list { max-height: 250px; overflow-y: auto; display: grid; gap: 1px; padding: 0 2px; }
+.font-opt { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; border: 1px solid transparent; border-radius: 6px; background: transparent; cursor: pointer; padding: 5px 8px; text-align: left; font-size: 15px; }
+.font-opt:hover { background: var(--hover); }
+.font-opt small { font: 11px var(--ui); color: var(--muted); }
+.toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 6px 10px; font-size: 13px; cursor: pointer; }
+.toggle-row input { accent-color: var(--accent); width: 16px; height: 16px; }
 
 /* Desk and sheet */
 .desk { padding-block: 28px 64px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
@@ -148,16 +224,23 @@ button, select, input, textarea { font: inherit; color: inherit; }
 .paper [contenteditable]:focus { box-shadow: 0 0 0 4px var(--accent-soft); background: transparent; }
 .paper [data-ph]:empty::before { content: attr(data-ph); color: #A9A7A1; }
 .paper .content:empty::before { content: "Type here"; color: #A9A7A1; }
-.row-tools { position: absolute; left: 0; top: 30px; display: flex; flex-wrap: wrap; gap: 4px; width: 190px;
-  opacity: 0; pointer-events: none; transition: opacity .15s; font-family: var(--ui); letter-spacing: 0; }
-.section:hover .row-tools, .section:focus-within .row-tools { opacity: 1; pointer-events: auto; }
-.row-tools button { height: 24px; padding: 0 8px; border-radius: 12px; border: 1px solid #D5D2CB; background: #FFFFFF; color: #3B3B38;
-  font-size: 11px; line-height: 1; cursor: pointer; }
-.row-tools button:hover { border-color: #2E5E8C; color: #2E5E8C; }
-.row-tools button.confirm { border-color: #A8322A; background: #A8322A; color: #FFFFFF; }
+.paper .content p:has(> br:only-child) { position: relative; }
+.paper .content p:has(> br:only-child)::before { content: "Type / for blocks"; position: absolute; color: #A9A7A1; pointer-events: none; }
 .page-guide { position: absolute; left: -18px; right: -18px; top: 297mm; border-top: 1.5px dashed #C2552B; pointer-events: none; }
 .page-guide span { position: absolute; right: 18px; top: 4px; font: 600 11px/1 var(--ui); letter-spacing: 0; color: #C2552B; background: #FCFBF8; padding: 3px 6px; border-radius: 4px; }
 .read-only .paper [contenteditable]:hover { box-shadow: none; background: transparent; }
+/* Block handles: "+" adds a block below, the six dots drag it or open its menu. They sit over the paper, which is always light. */
+.blk-handle { position: absolute; z-index: 45; display: flex; gap: 1px; }
+.blk-handle button { width: 20px; height: 24px; border: 0; border-radius: 4px; background: transparent; color: #A3A29E; cursor: pointer; display: grid; place-items: center; padding: 0; }
+.blk-handle button:hover { background: rgba(55, 53, 47, .08); color: #55534E; }
+.blk-handle .bh-grip { cursor: grab; }
+.blk-handle svg { width: 15px; height: 15px; }
+.paper .blk-hl { background: rgba(35, 131, 226, .07); border-radius: 3px; box-shadow: 0 0 0 3px rgba(35, 131, 226, .07); }
+.paper .is-dragging { opacity: .35; }
+.dragging-blk, .dragging-blk * { cursor: grabbing !important; user-select: none !important; }
+.drop-line { position: absolute; z-index: 46; height: 3px; border-radius: 2px; background: #2383E2; pointer-events: none; }
+.paper .blk-moved { animation: moved 1.2s ease-out; }
+@keyframes moved { from { background: rgba(35, 131, 226, .2); } to { background: transparent; } }
 
 /* Hidden keywords panel */
 .panel { max-width: 794px; margin: 28px auto 0; background: var(--bar); border: 1px solid var(--line); border-radius: 12px; padding: 18px 18px 20px; }
@@ -177,17 +260,18 @@ button, select, input, textarea { font: inherit; color: inherit; }
 
 /* Bare mode: just the sheet, used for checking it against the original PDF. */
 .bare body { background: #FCFBF8; }
-.bare .toolbar, .bare .panel, .bare .row-tools, .bare .page-guide, .bare .banner { display: none !important; }
+.bare .toolbar, .bare .panel, .bare .page-guide, .bare .banner, .bare .blk-handle, .bare .float-bar { display: none !important; }
 .bare .desk { padding: 0; }
 .bare .zoom { margin: 0; }
 .bare .zoom .paper { box-shadow: none; }
 .bare .paper [contenteditable]:hover { box-shadow: none; background: transparent; }
 
-@media (prefers-reduced-motion: reduce) { .row-tools { transition: none; } }
+@media (max-width: 1000px) { .hints { display: none; } }
+@media (prefers-reduced-motion: reduce) { .paper .blk-moved { animation: none; } }
 @media print {
   @page { size: A4; margin: 0; }
   html, body { background: #FCFBF8 !important; padding: 0 !important; }
-  body::before, .toolbar, .panel, .row-tools, .page-guide, .banner, .toast { display: none !important; }
+  body::before, .toolbar, .panel, .page-guide, .banner, .toast, .blk-handle, .drop-line, .float-bar, .menu, .popover { display: none !important; }
   .desk { padding: 0 !important; }
   .zoom { zoom: 1 !important; margin: 0; }
   .zoom .paper { box-shadow: none; min-height: 296mm; }
@@ -198,49 +282,33 @@ button, select, input, textarea { font: inherit; color: inherit; }
   <div class="bar-inner">
     <div class="doc-id">
       <span class="doc-name">Pranjal Gupta — Resume</span>
-      <span class="status" id="status" role="status" aria-live="polite">Loading…</span>
+      <span class="doc-sub"><span class="fit" id="fit" hidden>Fits on one page</span><span class="status" id="status" role="status" aria-live="polite">Loading…</span></span>
     </div>
-    <div class="tools" id="tools" role="toolbar" aria-label="Formatting">
-      <div class="grp">
-        <button class="tb" id="b-undo" type="button" title="Undo (Ctrl+Z)" aria-label="Undo"><svg viewBox="0 0 24 24"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg></button>
-        <button class="tb" id="b-redo" type="button" title="Redo (Ctrl+Y)" aria-label="Redo"><svg viewBox="0 0 24 24"><path d="m15 14 5-5-5-5"/><path d="M20 9H9.5a5.5 5.5 0 0 0 0 11H13"/></svg></button>
-      </div>
-      <div class="grp">
-        <label class="sr" for="block-style">Text style</label>
-        <select class="style-select" id="block-style" title="Text style">
-          <option value="p">Body text</option>
-          <option value="h3">Entry title</option>
-          <option value="h4">Entry details</option>
-          <option value="ul">Bullet list</option>
-        </select>
-      </div>
-      <div class="grp">
-        <button class="tb" id="b-bold" type="button" title="Bold (Ctrl+B)" aria-label="Bold" aria-pressed="false"><span class="glyph" style="font-weight:800">B</span></button>
-        <button class="tb" id="b-italic" type="button" title="Italic (Ctrl+I)" aria-label="Italic" aria-pressed="false"><span class="glyph" style="font-style:italic;font-family:Georgia,serif">I</span></button>
-        <button class="tb" id="b-underline" type="button" title="Underline (Ctrl+U)" aria-label="Underline" aria-pressed="false"><span class="glyph" style="text-decoration:underline">U</span></button>
-      </div>
-      <div class="grp">
-        <button class="tb" id="b-link" type="button" title="Link (Ctrl+K)" aria-label="Link"><svg viewBox="0 0 24 24"><path d="M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1 1"/><path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1-1"/></svg></button>
-        <button class="tb" id="b-clear" type="button" title="Clear formatting" aria-label="Clear formatting"><svg viewBox="0 0 24 24"><path d="M5 5h11"/><path d="m11.5 5-4 14"/><path d="m15 15 5 5"/><path d="m20 15-5 5"/></svg></button>
-      </div>
-      <div class="grp">
-        <button class="tb" id="b-entry" type="button" title="Add an entry to the section you are in">+ Entry</button>
-        <button class="tb" id="b-section" type="button" title="Add a new section below the one you are in">+ Section</button>
-      </div>
+    <div class="hints" id="hints" aria-label="How to edit">
+      <span>Select text to format</span><span>Type <kbd>/</kbd> for blocks</span><span>Hover a block, drag <kbd>⋮⋮</kbd> to move it</span>
+    </div>
+    <div class="tools" id="tools" role="toolbar" aria-label="Page">
+      <button class="tb" id="b-undo" type="button" title="Undo (Ctrl+Z)" aria-label="Undo"><svg viewBox="0 0 24 24"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg></button>
+      <button class="tb" id="b-redo" type="button" title="Redo (Ctrl+Y)" aria-label="Redo"><svg viewBox="0 0 24 24"><path d="m15 14 5-5-5-5"/><path d="M20 9H9.5a5.5 5.5 0 0 0 0 11H13"/></svg></button>
+      <button class="ghost" id="b-style" type="button" aria-expanded="false" aria-controls="style-menu" title="Fonts and text size for the whole page"><span style="font-family:Georgia,serif;font-weight:600">Aa</span> Style</button>
     </div>
     <button class="primary" id="b-download" type="button" title="Download a print-ready file you can save as a PDF">
       <svg viewBox="0 0 24 24"><path d="M12 4v11"/><path d="m7 10 5 5 5-5"/><path d="M5 20h14"/></svg>Download
     </button>
   </div>
-  <div class="popover" id="link-pop" hidden>
-    <label for="link-url">Link address</label>
-    <input id="link-url" type="url" inputmode="url" placeholder="https://…" autocomplete="off">
-    <div class="err" id="link-err" hidden>Use a full web address, like https://example.com, or an email link starting with mailto:</div>
-    <div class="row">
-      <a class="open-link" id="link-open" href="#" target="_blank" rel="noopener noreferrer" hidden>Open link</a>
-      <button class="ghost" id="link-remove" type="button">Remove</button>
-      <button class="primary" id="link-apply" type="button">Apply</button>
+  <div class="menu style-menu" id="style-menu" hidden>
+    <div class="mh">Page font</div>
+    <div class="ag-row" role="radiogroup" aria-label="Page font">
+      <button class="ag" type="button" role="radio" data-font="default" aria-checked="true"><span class="ag-a" style="font-family:Montserrat,sans-serif">Ag</span><span class="ag-n">Default</span></button>
+      <button class="ag" type="button" role="radio" data-font="Lora" aria-checked="false"><span class="ag-a" style="font-family:Lora,Georgia,serif">Ag</span><span class="ag-n">Serif</span></button>
+      <button class="ag" type="button" role="radio" data-font="IBM Plex Mono" aria-checked="false"><span class="ag-a" style="font-family:'IBM Plex Mono',Consolas,monospace">Ag</span><span class="ag-n">Mono</span></button>
     </div>
+    <div class="mh">All fonts</div>
+    <label class="sr" for="font-q">Search fonts</label>
+    <input type="search" id="font-q" placeholder="Search fonts" autocomplete="off">
+    <div class="font-list" id="font-list" role="radiogroup" aria-label="All fonts"></div>
+    <div class="sep"></div>
+    <label class="toggle-row" for="small-text">Small text <input type="checkbox" id="small-text"></label>
   </div>
 </header>
 
@@ -260,6 +328,59 @@ button, select, input, textarea { font: inherit; color: inherit; }
   </section>
 </main>
 
+<!-- Pieces that float next to the text: they live at page level so they can sit beside any block. -->
+<div class="blk-handle" id="blk-handle" hidden>
+  <button type="button" class="bh-add" title="Add a block below" aria-label="Add a block below"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>
+  <button type="button" class="bh-grip" title="Drag to move · Click for options" aria-label="Drag to move, or click for options"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.7"/><circle cx="15" cy="6" r="1.7"/><circle cx="9" cy="12" r="1.7"/><circle cx="15" cy="12" r="1.7"/><circle cx="9" cy="18" r="1.7"/><circle cx="15" cy="18" r="1.7"/></svg></button>
+</div>
+<div class="drop-line" id="drop-line" hidden></div>
+<div class="menu" id="blk-menu" hidden>
+  <div class="mh" id="blk-menu-title">Block</div>
+  <button class="mi" type="button" data-bm="up"><svg viewBox="0 0 24 24"><path d="m6 15 6-6 6 6"/></svg>Move up</button>
+  <button class="mi" type="button" data-bm="down"><svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>Move down</button>
+  <button class="mi" type="button" data-bm="dup"><svg viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg>Duplicate</button>
+  <button class="mi" type="button" data-bm="cols" id="bm-cols"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="7" height="14" rx="1.5"/><rect x="13" y="5" width="7" height="14" rx="1.5"/></svg><span id="bm-cols-label">Two columns</span></button>
+  <div class="sep"></div>
+  <button class="mi" type="button" data-bm="del"><svg viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>Delete</button>
+</div>
+<div class="float-bar" id="float-bar" role="toolbar" aria-label="Format selected text" hidden>
+  <button class="tb text-tb fb-text" type="button" data-fbm="fb-turn" aria-expanded="false" title="Turn into"><span id="fb-turn-label">Text</span><svg class="caret" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></button>
+  <span class="fsep fb-text"></span>
+  <button class="tb fb-text" type="button" data-fcmd="bold" data-fstate="bold" aria-label="Bold" aria-pressed="false" title="Bold (Ctrl+B)"><span class="glyph" style="font-weight:800">B</span></button>
+  <button class="tb fb-text" type="button" data-fcmd="italic" data-fstate="italic" aria-label="Italic" aria-pressed="false" title="Italic (Ctrl+I)"><span class="glyph" style="font-style:italic;font-family:Georgia,serif">I</span></button>
+  <button class="tb fb-text" type="button" data-fcmd="underline" data-fstate="underline" aria-label="Underline" aria-pressed="false" title="Underline (Ctrl+U)"><span class="glyph" style="text-decoration:underline">U</span></button>
+  <button class="tb fb-text" type="button" data-fcmd="strikeThrough" data-fstate="strikeThrough" aria-label="Strikethrough" aria-pressed="false" title="Strikethrough"><span class="glyph" style="text-decoration:line-through">S</span></button>
+  <span class="fsep fb-text"></span>
+  <button class="tb" type="button" data-fcmd="link" aria-label="Link" title="Link (Ctrl+K)"><svg viewBox="0 0 24 24"><path d="M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1 1"/><path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1-1"/></svg></button>
+  <button class="tb fb-text" type="button" data-fbm="fb-color" aria-expanded="false" aria-label="Colour" title="Text and background colour"><span class="glyph" style="text-decoration:underline;text-decoration-color:#D9730D;text-decoration-thickness:2px">A</span><svg class="caret" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></button>
+  <button class="tb fb-text" type="button" data-fcmd="removeFormat" aria-label="Clear formatting" title="Clear formatting"><svg viewBox="0 0 24 24"><path d="M5 5h11"/><path d="m11.5 5-4 14"/><path d="m15 15 5 5"/><path d="m20 15-5 5"/></svg></button>
+</div>
+<div class="menu" id="fb-turn" hidden>
+  <div class="mh">Turn into</div>
+  <button class="mi" type="button" data-turn="p"><span class="ico">Aa</span>Text</button>
+  <button class="mi" type="button" data-turn="h3"><span class="ico">H</span>Entry title</button>
+  <button class="mi" type="button" data-turn="h4"><span class="ico" style="font-weight:500">h</span>Entry details</button>
+  <button class="mi" type="button" data-turn="ul"><span class="ico">•</span>Bulleted list</button>
+  <button class="mi" type="button" data-turn="ol"><span class="ico">1.</span>Numbered list</button>
+</div>
+<div class="menu" id="fb-color" hidden>
+  <div class="mh">Text colour</div>
+  <div class="swatches" id="fb-text-sw"></div>
+  <div class="mh">Background</div>
+  <div class="swatches" id="fb-bg-sw"></div>
+</div>
+<div class="menu slash" id="slash" role="listbox" aria-label="Insert a block" hidden></div>
+<div class="popover" id="link-pop" hidden>
+  <label for="link-url">Link address</label>
+  <input id="link-url" type="url" inputmode="url" placeholder="https://…" autocomplete="off">
+  <div class="err" id="link-err" hidden>Use a full web address, like https://example.com, or an email link starting with mailto:</div>
+  <div class="row">
+    <a class="open-link" id="link-open" href="#" target="_blank" rel="noopener noreferrer" hidden>Open link</a>
+    <button class="ghost" id="link-remove" type="button">Remove</button>
+    <button class="primary" id="link-apply" type="button">Apply</button>
+  </div>
+</div>
+
 <div class="toast" id="toast" role="status" hidden><span id="toast-text"></span><button id="toast-act" type="button" hidden></button></div>
 
 <script>
@@ -271,6 +392,7 @@ button, select, input, textarea { font: inherit; color: inherit; }
   const BARE = /[?&]bare\b/.test(location.search);
   if (BARE) document.documentElement.classList.add('bare');
   const STASH = 'resume-unsaved-v1';
+  const MAC = /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent);
 
   let state = null, dirty = false, saving = false, saveTimer = 0, retried = false;
   let readOnly = false, artifactApi = null, downloadsApi = null, claudeChecked = false;
@@ -289,10 +411,13 @@ button, select, input, textarea { font: inherit; color: inherit; }
   }
 
   /* ---------- cleaning: only the formats the design supports survive ---------- */
-  const INLINE = { B: 'b', STRONG: 'b', I: 'i', EM: 'i', U: 'u', A: 'a', BR: 'br' };
-  const BLOCK = { P: 'p', DIV: 'p', H1: 'h3', H2: 'h3', H3: 'h3', H4: 'h4', H5: 'h4', H6: 'h4', UL: 'ul', OL: 'ul', LI: 'li' };
+  const INLINE = { B: 'b', STRONG: 'b', I: 'i', EM: 'i', U: 'u', S: 's', STRIKE: 's', DEL: 's', A: 'a', BR: 'br' };
+  const BLOCK = { P: 'p', DIV: 'p', H1: 'h3', H2: 'h3', H3: 'h3', H4: 'h4', H5: 'h4', H6: 'h4', UL: 'ul', OL: 'ol', LI: 'li', HR: 'hr' };
+  const COLOURS = ['default', 'gray', 'brown', 'orange', 'yellow', 'green', 'blue', 'purple', 'pink', 'red'];
   const trimBr = h => h.replace(/^(\s*<br>)+|(<br>\s*)+$/g, '');
-  function cleanInline(node) {
+  // ctx says whether a colour is already active around this text, so a "default" colour is kept only where it undoes one.
+  function cleanInline(node, ctx) {
+    ctx = ctx || { tc: false, bg: false };
     let out = '';
     node.childNodes.forEach(n => {
       if (n.nodeType === 3) { out += esc(n.nodeValue); return; }
@@ -300,12 +425,21 @@ button, select, input, textarea { font: inherit; color: inherit; }
       const t = n.tagName, tag = INLINE[t];
       if (tag === 'br') { out += '<br>'; return; }
       if (!tag) {
+        if (t === 'SPAN' && (n.hasAttribute('data-tc') || n.hasAttribute('data-bg'))) {
+          let tc = n.getAttribute('data-tc'), bg = n.getAttribute('data-bg');
+          if (!COLOURS.includes(tc) || (tc === 'default' && !ctx.tc)) tc = null;
+          if (!COLOURS.includes(bg) || (bg === 'default' && !ctx.bg)) bg = null;
+          const inner = cleanInline(n, { tc: tc ? tc !== 'default' : ctx.tc, bg: bg ? bg !== 'default' : ctx.bg });
+          if (!inner) return;
+          out += tc || bg ? '<span' + (tc ? ' data-tc="' + tc + '"' : '') + (bg ? ' data-bg="' + bg + '"' : '') + '>' + inner + '</span>' : inner;
+          return;
+        }
         // Stray wrappers (span, font) are dropped: on screen they already look like the text around them.
         if (BLOCK[t] && out && !/<br>$/.test(out)) out += ' ';
-        out += cleanInline(n);
+        out += cleanInline(n, ctx);
         return;
       }
-      const inner = cleanInline(n);
+      const inner = cleanInline(n, ctx);
       if (!inner) return;
       if (tag === 'a') {
         const href = safeHref(n.getAttribute('href'));
@@ -330,8 +464,10 @@ button, select, input, textarea { font: inherit; color: inherit; }
         return;
       }
       flush();
-      if (b === 'ul' || b === 'li') {
+      if (b === 'hr') { out += '<hr>'; return; }
+      if (b === 'ul' || b === 'ol' || b === 'li') {
         const items = b === 'li' ? [n] : Array.from(n.childNodes);
+        const listTag = b === 'ol' ? 'ol' : 'ul';
         let lis = '';
         items.forEach(li => {
           if (li.nodeType === 3) { if (li.nodeValue.trim()) lis += '<li>' + esc(li.nodeValue.trim()) + '</li>'; return; }
@@ -339,19 +475,59 @@ button, select, input, textarea { font: inherit; color: inherit; }
           const h = trimBr(cleanInline(li)).trim();
           if (h) lis += '<li>' + h + '</li>';
         });
-        if (lis) out += '<ul>' + lis + '</ul>';
+        if (lis) out += '<' + listTag + '>' + lis + '</' + listTag + '>';
         return;
       }
+      // Wrappers such as the editor's job-entry groups are flattened: the saved file keeps plain blocks.
       if (hasBlockChild(n)) { out += cleanBlocks(n); return; }
       const h = trimBr(cleanInline(n)).trim();
       if (h) out += '<' + b + '>' + h + '</' + b + '>';
     });
     flush();
-    return out.replace(/<\/ul><ul>/g, '');
+    return out.replace(/<\/ul><ul>/g, '').replace(/<\/ol><ol>/g, '');
   }
   function sanitizeHtml(str) {
     const doc = new DOMParser().parseFromString('<div id="x">' + (str || '') + '</div>', 'text/html');
     return cleanBlocks(doc.getElementById('x'));
+  }
+
+  /* ---------- fonts for the whole page (the Style menu) ----------
+     Notion offers three page fonts; Pagecraft keeps those three on top and adds a wider library.
+     A font always applies to the whole page, never to single words, so every page stays consistent. */
+  const FONTS = [
+    ['Inter', 'Sans', '400;600', 600], ['Montserrat', 'Sans', '400;500', 500], ['Jost', 'Sans', '400;600', 600], ['DM Sans', 'Sans', '400;600', 600],
+    ['Manrope', 'Sans', '400;600', 600], ['Work Sans', 'Sans', '400;600', 600], ['IBM Plex Sans', 'Sans', '400;600', 600], ['Source Sans 3', 'Sans', '400;600', 600],
+    ['Nunito Sans', 'Sans', '400;600', 600], ['Poppins', 'Sans', '400;600', 600], ['Space Grotesk', 'Sans', '400;600', 600], ['Outfit', 'Sans', '400;600', 600],
+    ['Lora', 'Serif', '400;600', 600], ['Merriweather', 'Serif', '400;700', 700], ['Playfair Display', 'Serif', '400;600', 600], ['Libre Baskerville', 'Serif', '400;700', 700],
+    ['Source Serif 4', 'Serif', '400;600', 600], ['Crimson Pro', 'Serif', '400;600', 600], ['EB Garamond', 'Serif', '400;600', 600], ['Fraunces', 'Serif', '400;600', 600],
+    ['IBM Plex Mono', 'Mono', '400;600', 600], ['JetBrains Mono', 'Mono', '400;600', 600], ['Space Mono', 'Mono', '400;700', 700], ['Roboto Mono', 'Mono', '400;600', 600]
+  ];
+  const fontInfo = name => FONTS.find(f => f[0] === name) || null;
+  const fallback = cat => cat === 'Serif' ? 'Georgia, serif' : cat === 'Mono' ? 'Consolas, monospace' : '"Helvetica Neue", Arial, sans-serif';
+  const fontHref = f => 'https://fonts.googleapis.com/css2?family=' + f[0].replace(/ /g, '+') + ':wght@' + f[2] + '&display=swap';
+  const loadedFonts = new Set();
+  function ensureFont(name) {
+    const f = fontInfo(name); if (!f || loadedFonts.has(name)) return;
+    loadedFonts.add(name);
+    const l = document.createElement('link'); l.rel = 'stylesheet'; l.href = fontHref(f);
+    l.addEventListener('load', () => { if (document.fonts) document.fonts.ready.then(updatePageGuide); });
+    document.head.appendChild(l);
+  }
+  let pageStyle = { font: 'default', small: false };
+  function styleVars(st) {
+    const scale = '--scale:' + (st && st.small ? '.9' : '1');
+    const f = st && st.font !== 'default' ? fontInfo(st.font) : null;
+    if (!f) return scale;
+    const stack = '"' + f[0] + '", ' + fallback(f[1]);
+    return '--f-paper:' + stack + ';--f-head:' + stack + ';--f-contact:' + stack + ';--w-bold:' + f[3] +
+      ';--track:' + (f[1] === 'Mono' ? '0em' : f[1] === 'Serif' ? '.01em' : '.02em') + ';' + scale;
+  }
+  function applyStyle() {
+    if (pageStyle.font !== 'default') ensureFont(pageStyle.font);
+    paper.style.cssText = styleVars(pageStyle);
+    $('#small-text').checked = !!pageStyle.small;
+    $$('#style-menu [data-font]').forEach(b => b.setAttribute('aria-checked', b.dataset.font === pageStyle.font ? 'true' : 'false'));
+    requestAnimationFrame(updatePageGuide);
   }
 
   /* ---------- data ---------- */
@@ -359,6 +535,7 @@ button, select, input, textarea { font: inherit; color: inherit; }
     d = d && typeof d === 'object' ? d : {};
     const str = v => typeof v === 'string' ? v : '';
     const contact = Array.isArray(d.contact) ? d.contact : [];
+    const st = d.style && typeof d.style === 'object' ? d.style : {};
     return {
       version: 1,
       contact: contact.map(c => ({ text: str(c && c.text), href: safeHref(str(c && c.href)) })),
@@ -369,7 +546,8 @@ button, select, input, textarea { font: inherit; color: inherit; }
       })),
       hiddenKeywords: (Array.isArray(d.hiddenKeywords) ? d.hiddenKeywords : []).map(g => ({
         group: str(g && g.group), items: (Array.isArray(g && g.items) ? g.items : []).map(str).filter(Boolean)
-      }))
+      })),
+      style: { font: fontInfo(st.font) ? st.font : 'default', small: st.small === true }
     };
   }
 
@@ -384,27 +562,29 @@ button, select, input, textarea { font: inherit; color: inherit; }
     const i = sections.findIndex(s => s.id === 'work');
     return i >= 0 ? i : Math.min(1, sections.length - 1);
   }
-  function rowTools(sec) {
-    const two = sec.layout === 'two-column';
-    return '<div class="row-tools" contenteditable="false">' +
-      '<button type="button" data-act="add">' + (two ? '+ Item' : '+ Entry') + '</button>' +
-      '<button type="button" data-act="up" aria-label="Move section up" title="Move up">↑</button>' +
-      '<button type="button" data-act="down" aria-label="Move section down" title="Move down">↓</button>' +
-      '<button type="button" data-act="cols">' + (two ? '1 column' : '2 columns') + '</button>' +
-      '<button type="button" data-act="del">Delete</button></div>';
+  // In the editor, each job (a title, its details and its bullets) is grouped so it can be dragged as one block.
+  function groupEntries(html) {
+    const t = document.createElement('template'); t.innerHTML = html;
+    const out = document.createElement('div'); let cur = null;
+    Array.from(t.content.childNodes).forEach(n => {
+      if (n.nodeType === 1 && n.tagName === 'H3') { cur = document.createElement('div'); cur.className = 'entry'; out.appendChild(cur); }
+      (cur || out).appendChild(n);
+    });
+    return out.innerHTML;
   }
   function sectionHtml(sec, editable, withKw, kw) {
     const rich = editable ? ' contenteditable="true" spellcheck="true"' : '';
     const single = editable ? ' contenteditable="true" spellcheck="false" data-single=""' : '';
+    const body = sanitizeHtml(sec.html);
     return '<section class="section' + (sec.layout === 'two-column' ? ' two-col' : '') + '" data-id="' + esc(sec.id) + '">' +
       '<div class="label"><div class="label-text"' + single + ' data-ph="SECTION">' + esc(sec.label) + '</div>' +
-      (withKw ? kw : '') + (editable ? rowTools(sec) : '') + '</div>' +
-      '<div class="content"' + rich + '>' + sanitizeHtml(sec.html) + '</div></section>';
+      (withKw ? kw : '') + '</div>' +
+      '<div class="content"' + rich + '>' + (editable ? groupEntries(body) : body) + '</div></section>';
   }
   function paperHtml(s, editable) {
     const single = editable ? ' contenteditable="true" spellcheck="false" data-single=""' : '';
     const rich = editable ? ' contenteditable="true" spellcheck="true"' : '';
-    const contact = s.contact.map((c, i) => {
+    const contact = s.contact.map(c => {
       if (editable) return '<span class="c-item' + (c.href ? ' is-link' : '') + '" data-href="' + esc(c.href) + '"' + single + ' data-ph="Contact">' + esc(c.text) + '</span>';
       if (!c.text.trim()) return '';
       return c.href ? '<a class="c-item is-link" href="' + esc(c.href) + '">' + esc(c.text) + '</a>' : '<span class="c-item">' + esc(c.text) + '</span>';
@@ -419,7 +599,8 @@ button, select, input, textarea { font: inherit; color: inherit; }
   }
   function render() {
     paper.innerHTML = paperHtml(state, !readOnly);
-    renderKwPanel();
+    applyStyle();
+    renderKwPanel(state.hiddenKeywords);
     fit();
     updatePageGuide();
   }
@@ -451,21 +632,24 @@ button, select, input, textarea { font: inherit; color: inherit; }
         layout: sec.classList.contains('two-col') ? 'two-column' : 'entries',
         html: cleanBlocks($('.content', sec))
       })),
-      hiddenKeywords: collectKeywords()
+      hiddenKeywords: collectKeywords(),
+      style: { font: pageStyle.font, small: !!pageStyle.small }
     };
   }
 
   /* ---------- keywords panel ---------- */
-  function renderKwPanel() {
+  function renderKwPanel(groups) {
     const box = $('#kw-groups');
-    box.innerHTML = state.hiddenKeywords.map((g, i) =>
+    box.innerHTML = groups.map((g, i) =>
       '<div class="kw-group"><label class="sr" for="kw-name-' + i + '">Group name</label>' +
       '<input id="kw-name-' + i + '" value="' + esc(g.group) + '"' + (readOnly ? ' disabled' : '') + '>' +
       '<label class="sr" for="kw-items-' + i + '">Keywords, one per line</label>' +
       '<textarea id="kw-items-' + i + '" spellcheck="false"' + (readOnly ? ' disabled' : '') + '>' + esc(g.items.join('\n')) + '</textarea></div>'
     ).join('');
-    $('#kw-panel').hidden = BARE || !state.hiddenKeywords.length;
+    $('#kw-panel').hidden = BARE || !groups.length;
   }
+  // Keyword edits are part of the same history; inside a box, Ctrl+Z still undoes that box's own typing.
+  $('#kw-groups').addEventListener('beforeinput', e => record('kw-' + (e.target.id || '')));
   $('#kw-groups').addEventListener('input', () => { placeKeywords(); markDirty(); });
 
   /* ---------- status, toast, banner ---------- */
@@ -541,7 +725,8 @@ button, select, input, textarea { font: inherit; color: inherit; }
     if (readOnly) return;
     readOnly = true; dirty = false; clearTimeout(saveTimer);
     document.documentElement.classList.add('read-only');
-    $('#tools').hidden = true;
+    $('#tools').hidden = true; $('#hints').hidden = true;
+    hideOverlays(); closeMenu();
     updateHistoryButtons();
     if (state) render();
     setStatus('View only — you can read this resume but not change it');
@@ -564,7 +749,7 @@ button, select, input, textarea { font: inherit; color: inherit; }
     }).catch(() => {});
   }
 
-  /* ---------- fitting the A4 sheet on small screens ---------- */
+  /* ---------- fitting the A4 sheet on small screens, and the page-fit note ---------- */
   function fit() {
     if (BARE) { zoomEl.style.zoom = ''; return; }
     const desk = $('#desk');
@@ -573,12 +758,14 @@ button, select, input, textarea { font: inherit; color: inherit; }
     const z = Math.min(1, avail / 794);
     zoomEl.style.zoom = z < 1 ? z.toFixed(4) : '';
   }
-  window.addEventListener('resize', fit);
+  window.addEventListener('resize', () => { fit(); hideOverlays(); });
   function updatePageGuide() {
-    const g = $('.page-guide', paper);
-    if (!g) return;
     const pageH = 297 * 96 / 25.4;
-    g.hidden = BARE || paper.offsetHeight <= pageH + 2;
+    const over = paper.offsetHeight > pageH + 2;
+    const g = $('.page-guide', paper);
+    if (g) g.hidden = BARE || !over;
+    const f = $('#fit');
+    if (state) { f.hidden = false; f.textContent = over ? 'Runs onto page 2' : 'Fits on one page'; f.classList.toggle('is-over', over); }
   }
 
   /* ---------- selection tracking ---------- */
@@ -590,7 +777,7 @@ button, select, input, textarea { font: inherit; color: inherit; }
     return ed && paper.contains(ed) ? ed : null;
   }
   // The browser reports a new selection a moment after it happens, so tools read the live selection first
-  // and only fall back to the remembered one when focus has moved into a box (link address, keywords).
+  // and only fall back to the remembered one when focus has moved into a box (link address, keywords, font search).
   function syncSelection() {
     const sel = getSelection();
     if (!sel.rangeCount) return;
@@ -598,7 +785,6 @@ button, select, input, textarea { font: inherit; color: inherit; }
     const ed = editableOf(r.commonAncestorContainer);
     if (ed) { lastRange = r.cloneRange(); lastEditable = ed; }
   }
-  document.addEventListener('selectionchange', () => { syncSelection(); updateToolbar(); });
   function restoreSelection() {
     syncSelection();
     if (!lastEditable || !lastEditable.isConnected) return false;
@@ -616,87 +802,93 @@ button, select, input, textarea { font: inherit; color: inherit; }
     const ed = editableOf(n);
     if (!ed || !isRich(ed)) return null;
     const b = n.closest('h3, h4, p, li, div');
-    return b && ed.contains(b) && b !== ed ? b : null;
+    return b && ed.contains(b) && b !== ed && !b.classList.contains('entry') ? b : null;
   }
-  function updateToolbar() {
-    const ed = lastEditable && lastEditable.isConnected ? lastEditable : null;
-    const focused = ed && (document.activeElement === ed || ed.contains(document.activeElement));
-    const rich = focused && isRich(ed);
-    const contactItem = focused && ed.classList.contains('c-item');
-    ['#b-bold', '#b-italic', '#b-underline', '#b-clear', '#block-style'].forEach(s => { $(s).disabled = !rich; });
-    $('#b-link').disabled = !(rich || contactItem);
-    if (rich) {
-      [['#b-bold', 'bold'], ['#b-italic', 'italic'], ['#b-underline', 'underline']].forEach(([s, cmd]) => {
-        let on = false; try { on = document.queryCommandState(cmd); } catch (e) {}
-        $(s).setAttribute('aria-pressed', on ? 'true' : 'false');
-      });
-      const b = caretBlock();
-      const tag = b ? b.tagName.toLowerCase() : 'p';
-      $('#block-style').value = tag === 'li' ? 'ul' : (tag === 'h3' || tag === 'h4' ? tag : 'p');
-    } else {
-      ['#b-bold', '#b-italic', '#b-underline'].forEach(s => $(s).setAttribute('aria-pressed', 'false'));
-    }
-  }
+  let mouseSel = false;
+  document.addEventListener('selectionchange', () => {
+    syncSelection();
+    if (slash && slashQuery() === null) closeSlash();
+    if (!mouseSel) requestAnimationFrame(positionFloat);
+  });
   document.addEventListener('focusin', e => {
     const ed = editableOf(e.target);
-    if (ed) lastEditable = ed;
-    if (!$('#toolbar').contains(e.target)) updateToolbar();
+    if (ed) { lastEditable = ed; HIST.typing = null; }
   });
 
   /* ---------- undo and redo ----------
-     The browser's own undo misses changes made any other way than typing (moving, adding or deleting sections,
-     switching columns, links on contact details), stops working once the cursor leaves the text, and can undo the
-     wrong thing after one of those changes. So the editor keeps its own history: a copy of the page and the
-     cursor, taken just before every change. Typing is grouped into chunks the way Google Docs does it.
-     The hidden-keywords boxes keep their own undo, like any text box. */
-  const HIST = { u: [], r: [], typing: null };
-  const MAC = /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent);
+     The browser's own undo misses changes made any other way than typing (moving, adding or deleting blocks,
+     fonts, colours, links on contact details), stops working once the cursor leaves the text, and can undo the
+     wrong thing after one of those changes. So the editor keeps its own history: a copy of the page, its fonts,
+     the hidden keywords and the cursor, taken just before every change. Typing is grouped into chunks the way
+     Google Docs does it. Any new feature that changes the page must call record() first. */
+  const HIST = { u: [], r: [], typing: null, key: null, at: 0 };
   let restoring = false;
-  function nodePath(root, node) {
-    const p = [];
-    while (node && node !== root) { const parent = node.parentNode; if (!parent) return null; p.unshift(Array.prototype.indexOf.call(parent.childNodes, node)); node = parent; }
-    return node === root ? p : null;
+  // The cursor is saved as "which editable field" plus a character count, so it survives the page being redrawn.
+  const editables = () => $$('[contenteditable="true"]', paper);
+  function charOffset(ed, node, off) {
+    const r = document.createRange(); r.selectNodeContents(ed);
+    try { r.setEnd(node, off); } catch (e) { return 0; }
+    return r.toString().length;
   }
-  function nodeAt(root, path) { let n = root; for (const i of path) n = n && n.childNodes[i]; return n || null; }
-  function selPath() {
+  function pointAt(ed, n) {
+    const w = document.createTreeWalker(ed, NodeFilter.SHOW_TEXT);
+    let t, last = null;
+    while ((t = w.nextNode())) { if (n <= t.data.length) return [t, n]; n -= t.data.length; last = t; }
+    return last ? [last, last.data.length] : [ed, 0];
+  }
+  function selSave() {
     const s = getSelection(); if (!s.rangeCount) return null;
-    const r = s.getRangeAt(0); if (!paper.contains(r.startContainer) || !paper.contains(r.endContainer)) return null;
-    const a = nodePath(paper, r.startContainer), b = nodePath(paper, r.endContainer);
-    return a && b ? { a, ao: r.startOffset, b, bo: r.endOffset } : null;
+    const r = s.getRangeAt(0), eds = editables();
+    const i = eds.findIndex(e => e.contains(r.startContainer)); if (i < 0) return null;
+    const a = charOffset(eds[i], r.startContainer, r.startOffset);
+    const b = eds[i].contains(r.endContainer) ? charOffset(eds[i], r.endContainer, r.endOffset) : a;
+    return { i, a, b };
   }
-  function restoreSel(sp) {
+  function selRestore(sp) {
     if (!sp) return;
-    const a = nodeAt(paper, sp.a), b = nodeAt(paper, sp.b); if (!a || !b) return;
-    const len = n => n.nodeType === 3 ? n.data.length : n.childNodes.length;
+    const ed = editables()[sp.i]; if (!ed) return;
+    const [sn, so] = pointAt(ed, sp.a), [en, eo] = pointAt(ed, sp.b);
     const r = document.createRange();
-    try { r.setStart(a, Math.min(sp.ao, len(a))); r.setEnd(b, Math.min(sp.bo, len(b))); } catch (e) { return; }
-    const ed = editableOf(a); if (ed) ed.focus({ preventScroll: true });
+    try { r.setStart(sn, so); r.setEnd(en, eo); } catch (e) { return; }
+    ed.focus({ preventScroll: true });
     const s = getSelection(); s.removeAllRanges(); s.addRange(r);
-    lastRange = r.cloneRange(); if (ed) lastEditable = ed;
-    const rect = r.getBoundingClientRect(), barBottom = $('#toolbar').getBoundingClientRect().bottom;
-    if (rect.height && (rect.top < barBottom || rect.bottom > innerHeight)) (ed || paper).scrollIntoView({ block: 'center' });
+    lastRange = r.cloneRange(); lastEditable = ed;
+    const rect = r.getBoundingClientRect(), top = $('#toolbar').getBoundingClientRect().bottom;
+    if (rect.top < top || rect.bottom > innerHeight) window.scrollBy(0, (rect.top + rect.bottom) / 2 - (top + innerHeight) / 2);
   }
-  // The copy leaves out what the page redraws for itself (hidden keywords, the page-2 line, a half-confirmed delete),
+  // The copy leaves out what the page redraws for itself (hidden keywords, the page-2 line, hover highlights),
   // so those never count as a change of their own.
   function snap() {
     const c = paper.cloneNode(true);
     $$('.kw', c).forEach(n => n.remove());
     $$('.page-guide', c).forEach(n => n.removeAttribute('hidden'));
-    $$('.row-tools .confirm', c).forEach(n => { n.classList.remove('confirm'); n.textContent = 'Delete'; });
+    $$('.blk-hl, .is-dragging, .blk-moved', c).forEach(n => n.classList.remove('blk-hl', 'is-dragging', 'blk-moved'));
+    $$('[class=""]', c).forEach(n => n.removeAttribute('class'));
     $$('[style=""]', c).forEach(n => n.removeAttribute('style'));
-    return { html: c.innerHTML, sel: selPath() };
+    return { html: c.innerHTML, style: JSON.stringify(pageStyle), kw: JSON.stringify(collectKeywords()), sel: selSave() };
   }
-  const same = (a, b) => !!a && !!b && a.html === b.html;
-  // Call just BEFORE a change.
-  function record() {
+  const same = (a, b) => !!a && !!b && a.html === b.html && a.style === b.style && a.kw === b.kw;
+  // Call just BEFORE a change. A key merges quick repeats of one control into a single step.
+  function record(key) {
     if (restoring || readOnly || !state) return;
+    const now = Date.now();
     HIST.typing = null;
-    const s = snap();
-    if (!same(HIST.u[HIST.u.length - 1], s)) { HIST.u.push(s); if (HIST.u.length > 300) HIST.u.shift(); }
-    HIST.r.length = 0; updateHistoryButtons();
+    if (key && HIST.key === key && now - HIST.at < 1200) { HIST.at = now; return; }
+    HIST.key = key || null; HIST.at = now;
+    const s = snap(), pushed = !same(HIST.u[HIST.u.length - 1], s);
+    if (pushed) { HIST.u.push(s); if (HIST.u.length > 300) HIST.u.shift(); }
+    const keepRedo = HIST.r; HIST.r = [];
+    updateHistoryButtons();
+    // If the action turned out to change nothing, take the step back out and keep Redo as it was.
+    setTimeout(() => {
+      if (!state || !same(snap(), s)) return;
+      if (pushed && HIST.u[HIST.u.length - 1] === s) HIST.u.pop();
+      if (!HIST.r.length) HIST.r = keepRedo;
+      updateHistoryButtons();
+    }, 0);
   }
   // Typing: a new step after a pause, when switching between typing and deleting, at a new word once a chunk
-  // is long enough, or on Enter. Clicking or arrowing elsewhere also starts a new step.
+  // is long enough, or on Enter. Clicking, arrowing or tabbing elsewhere also starts a new step.
   function typingStep(kind, data) {
     const now = Date.now(), t = HIST.typing;
     if (!t || t.kind !== kind || now - t.at > 900 || t.n >= 40 || (kind === 'ins' && data === ' ' && t.n >= 12)) {
@@ -706,21 +898,23 @@ button, select, input, textarea { font: inherit; color: inherit; }
   }
   function applySnap(s) {
     restoring = true;
-    closeLink(false); pendingDelete = null; clearTimeout(pendingTimer);
+    hideOverlays(); if (openMenuEl && openMenuEl !== $('#style-menu')) closeMenu(); closeLink(false);
     paper.innerHTML = s.html;
+    pageStyle = JSON.parse(s.style); applyStyle();
+    if (JSON.stringify(collectKeywords()) !== s.kw) renderKwPanel(JSON.parse(s.kw));
     placeKeywords();
-    restoreSel(s.sel);
+    selRestore(s.sel);
     restoring = false; HIST.typing = null;
-    markDirty(); updateToolbar(); updateHistoryButtons();
+    markDirty(); updateFloatState(); updateHistoryButtons();
   }
   function undo() {
-    if (readOnly) return;
+    if (readOnly || !state) return;
     const cur = snap();
     while (HIST.u.length) { const prev = HIST.u.pop(); if (same(prev, cur)) continue; HIST.r.push(cur); applySnap(prev); return; }
     updateHistoryButtons(); toast('Nothing to undo.');
   }
   function redo() {
-    if (readOnly) return;
+    if (readOnly || !state) return;
     const cur = snap();
     while (HIST.r.length) { const next = HIST.r.pop(); if (same(next, cur)) continue; HIST.u.push(cur); applySnap(next); return; }
     updateHistoryButtons(); toast('Nothing to redo.');
@@ -729,11 +923,12 @@ button, select, input, textarea { font: inherit; color: inherit; }
     $('#b-undo').disabled = readOnly || !HIST.u.length;
     $('#b-redo').disabled = readOnly || !HIST.r.length;
   }
-  // Shortcuts work anywhere on the page, except inside a text box (link address, keywords), which keep their own undo.
+  // Shortcuts work anywhere on the page, except inside a text box, which keeps its own undo.
+  // e.code covers keyboard layouts where the Z key types another letter.
   document.addEventListener('keydown', e => {
     if (!(e.ctrlKey || e.metaKey) || e.altKey) return;
-    const k = e.key.toLowerCase();
-    const isUndo = k === 'z' && !e.shiftKey, isRedo = (k === 'z' && e.shiftKey) || (k === 'y' && !e.shiftKey);
+    const k = e.key.toLowerCase(), z = k === 'z' || e.code === 'KeyZ', y = k === 'y' || e.code === 'KeyY';
+    const isUndo = z && !e.shiftKey, isRedo = (z && e.shiftKey) || (y && !e.shiftKey);
     if (!isUndo && !isRedo) return;
     if (e.target.matches && e.target.matches('textarea, input:not([type]), input[type="text"], input[type="search"], input[type="url"], input[type="number"]')) return;
     e.preventDefault(); e.stopPropagation();
@@ -744,41 +939,96 @@ button, select, input, textarea { font: inherit; color: inherit; }
   paper.addEventListener('beforeinput', e => {
     const t = e.inputType;
     if (t === 'historyUndo' || t === 'historyRedo') { e.preventDefault(); if (t === 'historyUndo') undo(); else redo(); return; }
-    if (/^insert(Text|CompositionText|ReplacementText)$/.test(t)) typingStep('ins', e.data);
+    if (t === 'insertCompositionText') typingStep('ins', null); // a whole word arrives at once while composing: count it once
+    else if (/^insert(Text|ReplacementText)$/.test(t)) typingStep('ins', e.data);
     else if (/^delete(Content|Word|SoftLine|HardLine)(Backward|Forward)$/.test(t)) typingStep('del');
     else record();
   });
-  paper.addEventListener('mousedown', () => { HIST.typing = null; });
   $('#b-undo').title = MAC ? 'Undo (⌘Z)' : 'Undo (Ctrl+Z)';
   $('#b-redo').title = MAC ? 'Redo (⌘⇧Z)' : 'Redo (Ctrl+Y or Ctrl+Shift+Z)';
-
-  /* ---------- toolbar actions ---------- */
-  // Toolbar buttons must not take focus away from the text being edited.
   $('#tools').addEventListener('mousedown', e => { if (e.target.closest('button')) e.preventDefault(); });
   $('#b-download').addEventListener('mousedown', e => e.preventDefault());
-  function exec(cmd, val) { restoreSelection(); record(); document.execCommand(cmd, false, val); }
   $('#b-undo').addEventListener('click', undo);
   $('#b-redo').addEventListener('click', redo);
-  $('#b-bold').addEventListener('click', () => { exec('bold'); updateToolbar(); });
-  $('#b-italic').addEventListener('click', () => { exec('italic'); updateToolbar(); });
-  $('#b-underline').addEventListener('click', () => { exec('underline'); updateToolbar(); });
-  $('#b-clear').addEventListener('click', () => { exec('removeFormat'); updateToolbar(); });
-  $('#block-style').addEventListener('change', e => {
-    const v = e.target.value;
-    if (!restoreSelection() || !isRich(lastEditable)) return;
-    record();
-    const b = caretBlock();
-    const inList = b && b.tagName === 'LI';
-    if (v === 'ul') { if (!inList) document.execCommand('insertUnorderedList'); }
-    else {
-      if (inList) document.execCommand('insertUnorderedList');
-      document.execCommand('formatBlock', false, v);
-    }
-    markDirty(); updateToolbar();
-  });
   try { document.execCommand('defaultParagraphSeparator', false, 'p'); document.execCommand('styleWithCSS', false, false); } catch (e) {}
 
-  /* Link box */
+  /* ---------- formatting ---------- */
+  function needWords() {
+    if (!restoreSelection() || !isRich(lastEditable)) { toast('Select some words in the text first.'); return false; }
+    if (getSelection().isCollapsed) { toast('Select some words first.'); return false; }
+    return true;
+  }
+  function exec(cmd) {
+    if (!restoreSelection() || !isRich(lastEditable)) { toast('Click into the text first.'); return; }
+    record();
+    document.execCommand('styleWithCSS', false, false);
+    document.execCommand(cmd, false, null);
+    // The browser's Clear formatting leaves colours alone, so they are removed here as well: a colour wholly inside the
+    // selection is taken out; one that only partly overlaps it is switched off for the selected words.
+    if (cmd === 'removeFormat' && !getSelection().isCollapsed) {
+      const sp = selSave(), r = getSelection().getRangeAt(0);
+      let partial = false;
+      const drop = [];
+      // Decide for every colour first (moving text would shift the selection), then take them out together.
+      $$('span[data-tc], span[data-bg]', lastEditable).forEach(sn => {
+        if (!r.intersectsNode(sn)) return;
+        // Whole means its first and last letters both sit inside the selection.
+        const w = document.createTreeWalker(sn, NodeFilter.SHOW_TEXT), texts = [];
+        let t; while ((t = w.nextNode())) if (t.data.length) texts.push(t);
+        const first = texts[0], last = texts[texts.length - 1];
+        if (!first || (r.comparePoint(first, 0) === 0 && r.comparePoint(last, last.data.length) === 0)) drop.push(sn); else partial = true;
+      });
+      drop.forEach(sn => sn.replaceWith(...sn.childNodes));
+      lastEditable.normalize();
+      selRestore(sp);
+      if (partial) { applyColour('tc', 'default'); applyColour('bg', 'default'); }
+    }
+    markDirty(); updateFloatState();
+  }
+  function turnInto(v) {
+    if (!restoreSelection() || !isRich(lastEditable)) return;
+    const b = caretBlock();
+    const list = b && b.tagName === 'LI' ? b.parentElement.tagName.toLowerCase() : null;
+    if (v === list) return;
+    record();
+    if (v === 'ul') document.execCommand('insertUnorderedList');
+    else if (v === 'ol') document.execCommand('insertOrderedList');
+    else {
+      if (list) document.execCommand(list === 'ol' ? 'insertOrderedList' : 'insertUnorderedList');
+      document.execCommand('formatBlock', false, v);
+    }
+    markDirty(); updateFloatState();
+  }
+  // Colours: the selected words are wrapped in a span naming one of Notion's colours. A colour of the same
+  // kind inside the selection is cleared, so the new one wins; "default" switches a surrounding colour off.
+  function colourise(kind, name) {
+    if (!needWords()) return;
+    record();
+    applyColour(kind, name);
+    markDirty(); updateFloatState();
+  }
+  function applyColour(kind, name) {
+    document.execCommand('styleWithCSS', false, false);
+    document.execCommand('foreColor', false, '#010203');
+    const made = [];
+    $$('font[color]', paper).forEach(f => {
+      if (f.getAttribute('color').toLowerCase() !== '#010203') return;
+      $$('[data-' + kind + ']', f).forEach(n => n.removeAttribute('data-' + kind));
+      const span = document.createElement('span');
+      span.setAttribute('data-' + kind, name);
+      while (f.firstChild) span.appendChild(f.firstChild);
+      f.replaceWith(span);
+      made.push(span);
+    });
+    // Keep the same words selected, so another colour or format can follow straight away.
+    if (made.length) {
+      const r = document.createRange(); r.setStart(made[0], 0); r.setEnd(made[made.length - 1], made[made.length - 1].childNodes.length);
+      const s = getSelection(); s.removeAllRanges(); s.addRange(r);
+      lastRange = r.cloneRange();
+    }
+  }
+
+  /* ---------- the link box ---------- */
   const pop = $('#link-pop'), popInput = $('#link-url');
   let linkTarget = null;
   function anchorIn(range) {
@@ -786,7 +1036,7 @@ button, select, input, textarea { font: inherit; color: inherit; }
     const n = range.startContainer.nodeType === 1 ? range.startContainer : range.startContainer.parentElement;
     return n && n.closest('a');
   }
-  function openLink() {
+  function openLink(anchorBtn) {
     syncSelection();
     const ed = lastEditable && lastEditable.isConnected ? lastEditable : null;
     if (!ed) { toast('Click into the text you want to link first.'); return; }
@@ -800,16 +1050,21 @@ button, select, input, textarea { font: inherit; color: inherit; }
       linkTarget = { kind: 'rich', el: ed, range: r, anchor: a };
       popInput.value = a ? a.getAttribute('href') : '';
     } else { toast('Links work on contact details and on body text.'); return; }
+    closeMenu();
     const cur = safeHref(popInput.value);
     $('#link-open').hidden = !cur; $('#link-open').href = cur || '#';
     $('#link-remove').hidden = !popInput.value;
     $('#link-err').hidden = true;
-    const btn = $('#b-link').getBoundingClientRect(), bar = $('#toolbar').getBoundingClientRect();
-    pop.style.left = Math.max(8, Math.min(btn.left - bar.left, bar.width - 376)) + 'px';
     pop.hidden = false;
+    const fb = $('#float-bar');
+    const ref = anchorBtn || (!fb.hidden && $('[data-fcmd="link"]', fb)) || null;
+    const rect = ref ? ref.getBoundingClientRect() : (linkTarget.range ? linkTarget.range.getBoundingClientRect() : ed.getBoundingClientRect());
+    pop.style.left = Math.max(scrollX + 8, Math.min(rect.left + scrollX, scrollX + innerWidth - pop.offsetWidth - 8)) + 'px';
+    pop.style.top = (rect.bottom + scrollY + 6) + 'px';
     popInput.focus(); popInput.select();
   }
   function closeLink(refocus) {
+    if (pop.hidden) { linkTarget = null; return; }
     pop.hidden = true;
     if (refocus && linkTarget) {
       linkTarget.el.focus({ preventScroll: true });
@@ -841,96 +1096,384 @@ button, select, input, textarea { font: inherit; color: inherit; }
     closeLink(false);
     markDirty();
   }
-  $('#b-link').addEventListener('click', openLink);
   $('#link-apply').addEventListener('click', () => applyLink(false));
   $('#link-remove').addEventListener('click', () => applyLink(true));
   popInput.addEventListener('keydown', e => {
     if (e.key === 'Enter') { e.preventDefault(); applyLink(false); }
     if (e.key === 'Escape') { e.preventDefault(); closeLink(true); }
   });
-  document.addEventListener('mousedown', e => { if (!pop.hidden && !pop.contains(e.target) && !e.target.closest('#b-link')) closeLink(false); });
 
-  /* ---------- adding, moving and removing ---------- */
-  const currentSection = () => (lastEditable && lastEditable.isConnected && lastEditable.closest('.section')) || null;
+  /* ---------- menus ---------- */
+  let openMenuEl = null, openMenuBtn = null;
+  function closeMenu() {
+    if (openMenuEl) openMenuEl.hidden = true;
+    if (openMenuBtn) openMenuBtn.setAttribute('aria-expanded', 'false');
+    openMenuEl = openMenuBtn = null;
+  }
+  function openMenuAt(el, x, y, btn) {
+    closeMenu(); el.hidden = false;
+    el.style.left = Math.max(scrollX + 8, Math.min(x, scrollX + innerWidth - el.offsetWidth - 8)) + 'px';
+    el.style.top = y + 'px';
+    if (btn) btn.setAttribute('aria-expanded', 'true');
+    openMenuEl = el; openMenuBtn = btn || null;
+  }
+  document.addEventListener('mousedown', e => {
+    if (openMenuEl && !openMenuEl.contains(e.target) && !(openMenuBtn && openMenuBtn.contains(e.target))) closeMenu();
+    if (!pop.hidden && !pop.contains(e.target) && !e.target.closest('[data-fcmd="link"]')) closeLink(false);
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key !== 'Escape') return;
+    if (slash) return; // the "/" menu handles its own Escape
+    if (openMenuEl) { closeMenu(); restoreSelection(); }
+  });
+
+  /* ---------- adding blocks ---------- */
+  const currentSection = () => { syncSelection(); return (lastEditable && lastEditable.isConnected && lastEditable.closest('.section')) || null; };
   function selectContents(el) {
     const ed = editableOf(el); if (!ed) return;
     ed.focus({ preventScroll: true });
     const r = document.createRange(); r.selectNodeContents(el);
     const s = getSelection(); s.removeAllRanges(); s.addRange(r);
+    lastRange = r.cloneRange(); lastEditable = ed;
     el.scrollIntoView({ block: 'center', behavior: 'smooth' });
   }
+  function makeEntry() {
+    const en = document.createElement('div'); en.className = 'entry';
+    en.innerHTML = '<h3>ROLE OR DEGREE</h3><h4>Company or school | Start - End</h4><ul><li>What you did, and what changed because of it.</li></ul>';
+    return en;
+  }
+  function newSectionEl() {
+    const sec = { id: 's' + Date.now().toString(36), label: 'NEW SECTION', layout: 'entries', html: '<h3>TITLE</h3><h4>Details | Dates</h4><ul><li>Write here.</li></ul>' };
+    const tpl = document.createElement('template');
+    tpl.innerHTML = sectionHtml(sec, true, false, '');
+    return tpl.content.firstElementChild;
+  }
+  // A new job goes after the job you are in; in a two-column list (like Skills) it is a new item instead.
   function addEntry(sec) {
     sec = sec || currentSection() || $('.section[data-id="work"]', paper) || $$('.section', paper).pop();
     if (!sec) { addSection(); return; }
     record();
     const content = $('.content', sec);
     if (sec.classList.contains('two-col')) {
-      let ul = $$('ul', content).pop();
+      let ul = $$('ul, ol', content).pop();
       if (!ul) { ul = document.createElement('ul'); content.appendChild(ul); }
       const li = document.createElement('li'); li.textContent = 'New item'; ul.appendChild(li);
       selectContents(li);
     } else {
-      const tpl = document.createElement('template');
-      tpl.innerHTML = '<h3>ROLE OR DEGREE</h3><h4>Company or school | Start - End</h4><ul><li>What you did, and what changed because of it.</li></ul>';
-      const h3 = tpl.content.firstElementChild;
-      content.appendChild(tpl.content);
-      selectContents(h3);
+      const here = lastRange && content.contains(lastRange.startContainer) && (lastRange.startContainer.nodeType === 1 ? lastRange.startContainer : lastRange.startContainer.parentElement).closest('.entry');
+      const blank = lastRange && content.contains(lastRange.startContainer) && (lastRange.startContainer.nodeType === 1 ? lastRange.startContainer : lastRange.startContainer.parentElement).closest('.content > p');
+      const en = makeEntry();
+      if (here) here.after(en); else if (blank && !blank.textContent.trim()) blank.replaceWith(en); else content.appendChild(en);
+      selectContents($('h3', en));
     }
     markDirty();
   }
-  function addSection() {
+  function addSection(after) {
+    after = after || currentSection();
     record();
-    const after = currentSection();
-    const sec = { id: 's' + Date.now().toString(36), label: 'NEW SECTION', layout: 'entries', html: '<h3>TITLE</h3><h4>Details | Dates</h4><ul><li>Write here.</li></ul>' };
-    const tpl = document.createElement('template');
-    tpl.innerHTML = sectionHtml(sec, true, false, '');
-    const el = tpl.content.firstElementChild;
-    const list = $('.sections', paper);
-    if (after) after.after(el); else list.appendChild(el);
+    const el = newSectionEl();
+    if (after) after.after(el); else $('.sections', paper).appendChild(el);
     selectContents($('.label-text', el));
     markDirty();
   }
-  $('#b-entry').addEventListener('click', () => addEntry());
-  $('#b-section').addEventListener('click', addSection);
 
-  let pendingDelete = null, pendingTimer = 0;
-  paper.addEventListener('click', e => {
-    const btn = e.target.closest('.row-tools button');
-    if (!btn) return;
-    const sec = btn.closest('.section');
-    const act = btn.dataset.act;
-    if (act === 'add') addEntry(sec);
-    if (act === 'up' && sec.previousElementSibling) { record(); sec.previousElementSibling.before(sec); markDirty(); }
-    if (act === 'down' && sec.nextElementSibling) { record(); sec.nextElementSibling.after(sec); markDirty(); }
-    if (act === 'cols') {
+  /* ---------- block handles: drag sections, jobs and bullets ---------- */
+  const handle = $('#blk-handle'), dropLine = $('#drop-line');
+  const KIND_SEL = { li: 'li', entry: '.entry', section: '.section' };
+  const KIND_NAME = { li: 'Bullet', entry: 'Job entry', section: 'Section' };
+  let hovered = null, hideT = 0, drag = null, menuBlock = null;
+  function blockAt(t) {
+    if (!t || !paper.contains(t) || readOnly) return null;
+    const li = t.closest('li'); if (li && paper.contains(li)) return { el: li, kind: 'li' };
+    const en = t.closest('.entry'); if (en) return { el: en, kind: 'entry' };
+    const sec = t.closest('.section'); if (sec) return { el: sec, kind: 'section' };
+    return null;
+  }
+  function showHandle(b) {
+    clearTimeout(hideT);
+    if (hovered && hovered.el !== b.el) hovered.el.classList.remove('blk-hl');
+    hovered = b;
+    const r = b.el.getBoundingClientRect();
+    const top = b.kind === 'section' ? $('.label-text', b.el).getBoundingClientRect().top - 3 : r.top - 3;
+    handle.hidden = false;
+    handle.style.left = (r.left + scrollX - 44) + 'px';
+    handle.style.top = (top + scrollY) + 'px';
+  }
+  function hideHandle() { handle.hidden = true; if (hovered) hovered.el.classList.remove('blk-hl'); }
+  function scheduleHide() { clearTimeout(hideT); hideT = setTimeout(() => { if (!drag && openMenuEl !== $('#blk-menu')) hideHandle(); }, 300); }
+  paper.addEventListener('mousemove', e => {
+    if (drag || mouseSel || readOnly) return;
+    let b = blockAt(e.target);
+    // Moving left from a block towards its handle keeps that block, the way Notion does,
+    // even though the pointer crosses the section label or the other column on the way.
+    if (hovered && hovered.el.isConnected && (!b || b.el !== hovered.el)) {
+      const r = hovered.el.getBoundingClientRect();
+      if (e.clientY >= r.top - 2 && e.clientY <= r.bottom + 2 && e.clientX >= r.left - 56 && e.clientX < r.left + 2) b = hovered;
+    }
+    if (b) showHandle(b); else scheduleHide();
+  });
+  paper.addEventListener('mouseleave', scheduleHide);
+  handle.addEventListener('mouseenter', () => { clearTimeout(hideT); if (hovered) hovered.el.classList.add('blk-hl'); });
+  handle.addEventListener('mouseleave', () => { if (hovered && !drag) hovered.el.classList.remove('blk-hl'); scheduleHide(); });
+  function sib(el, dir, kind) {
+    let n = dir < 0 ? el.previousElementSibling : el.nextElementSibling;
+    while (n && !n.matches(KIND_SEL[kind])) n = dir < 0 ? n.previousElementSibling : n.nextElementSibling;
+    return n;
+  }
+  function flash(el) { el.classList.remove('blk-moved'); void el.offsetWidth; el.classList.add('blk-moved'); setTimeout(() => el.classList.remove('blk-moved'), 1300); }
+  function cleanList(list) { if (list && /^(UL|OL)$/.test(list.tagName) && !list.children.length) list.remove(); }
+  function afterBlockChange() { placeKeywords(); markDirty(); }
+  function blockAction(b, act) {
+    const el = b.el, parent = el.parentElement;
+    if (!el.isConnected) return;
+    if (act === 'up' || act === 'down') {
+      const n = sib(el, act === 'up' ? -1 : 1, b.kind);
+      if (!n) { toast(act === 'up' ? 'Already at the top.' : 'Already at the bottom.'); return; }
+      record(); if (act === 'up') n.before(el); else n.after(el);
+      flash(el); afterBlockChange(); showHandle(b); return;
+    }
+    if (act === 'dup') {
       record();
-      const two = sec.classList.toggle('two-col');
-      btn.textContent = two ? '1 column' : '2 columns';
-      $('[data-act="add"]', sec).textContent = two ? '+ Item' : '+ Entry';
-      markDirty();
+      const c = el.cloneNode(true);
+      c.classList.remove('blk-hl', 'blk-moved');
+      if (b.kind === 'section') { c.dataset.id = 's' + Date.now().toString(36); $$('.kw', c).forEach(n => n.remove()); }
+      el.after(c); flash(c); afterBlockChange(); return;
+    }
+    if (act === 'cols' && b.kind === 'section') {
+      record(); el.classList.toggle('two-col'); flash(el); afterBlockChange(); return;
     }
     if (act === 'del') {
-      if (pendingDelete !== sec) {
-        pendingDelete = sec; btn.textContent = 'Click to confirm'; btn.classList.add('confirm');
-        clearTimeout(pendingTimer);
-        pendingTimer = setTimeout(() => { pendingDelete = null; btn.textContent = 'Delete'; btn.classList.remove('confirm'); }, 4000);
-        return;
-      }
-      pendingDelete = null; clearTimeout(pendingTimer);
-      const label = plain($('.label-text', sec)) || 'Section';
-      btn.textContent = 'Delete'; btn.classList.remove('confirm');
       record();
-      const idx = $$('.section', paper).indexOf(sec), id = sec.dataset.id;
-      sec.remove(); placeKeywords(); markDirty();
-      toast('“' + label + '” deleted.', 'Undo', () => {
-        // Already back (for example through Ctrl+Z)? Then there is nothing to do.
-        if ($$('.section', paper).some(s => s.dataset.id === id)) return;
-        record();
-        $('.sections', paper).insertBefore(sec, $$('.section', paper)[idx] || null);
-        placeKeywords(); markDirty();
+      const step = HIST.u[HIST.u.length - 1];
+      el.remove(); if (b.kind === 'li') cleanList(parent);
+      hideHandle(); afterBlockChange();
+      toast(KIND_NAME[b.kind] + ' deleted.', 'Undo', () => {
+        if (HIST.u[HIST.u.length - 1] === step) undo(); else toast('Press Ctrl+Z to step back to it.');
       });
     }
+  }
+  function addBelow(b) {
+    if (b.kind === 'section') { addSection(b.el); hideHandle(); return; }
+    record();
+    if (b.kind === 'li') { const li = document.createElement('li'); li.textContent = 'New point'; b.el.after(li); selectContents(li); }
+    if (b.kind === 'entry') { const en = makeEntry(); b.el.after(en); selectContents($('h3', en)); }
+    hideHandle(); markDirty();
+  }
+  $('.bh-add', handle).addEventListener('click', () => { if (hovered) addBelow(hovered); });
+  $('.bh-grip', handle).addEventListener('mousedown', e => {
+    if (!hovered || e.button !== 0) return;
+    e.preventDefault();
+    drag = { ...hovered, x: e.clientX, y: e.clientY, moved: false, target: null, before: true,
+      cands: $$(KIND_SEL[hovered.kind], paper).filter(c => c !== hovered.el && !hovered.el.contains(c) && !c.contains(hovered.el)) };
   });
+  document.addEventListener('mousemove', e => {
+    if (!drag) return;
+    if (!drag.moved && Math.hypot(e.clientX - drag.x, e.clientY - drag.y) < 4) return;
+    if (!drag.moved) { drag.moved = true; closeMenu(); drag.el.classList.add('is-dragging'); drag.el.classList.remove('blk-hl'); document.body.classList.add('dragging-blk'); handle.hidden = true; }
+    const barBottom = $('#toolbar').getBoundingClientRect().bottom;
+    if (e.clientY < barBottom + 24) scrollBy(0, -6); else if (e.clientY > innerHeight - 24) scrollBy(0, 6);
+    let best = null, bestD = Infinity;
+    drag.cands.forEach(c => {
+      const r = c.getBoundingClientRect(); if (!r.height) return;
+      const d = e.clientY < r.top ? r.top - e.clientY : e.clientY > r.bottom ? e.clientY - r.bottom : 0;
+      if (d < bestD) { bestD = d; best = { c, r }; }
+    });
+    if (!best) { dropLine.hidden = true; drag.target = null; return; }
+    drag.target = best.c; drag.before = e.clientY < best.r.top + best.r.height / 2;
+    dropLine.hidden = false;
+    dropLine.style.left = (best.r.left + scrollX) + 'px'; dropLine.style.width = best.r.width + 'px';
+    dropLine.style.top = ((drag.before ? best.r.top - 3 : best.r.bottom) + scrollY) + 'px';
+  });
+  document.addEventListener('mouseup', () => {
+    if (mouseSel) { mouseSel = false; requestAnimationFrame(positionFloat); }
+    if (!drag) return;
+    const d = drag; drag = null;
+    document.body.classList.remove('dragging-blk'); d.el.classList.remove('is-dragging'); dropLine.hidden = true;
+    if (!d.moved) {
+      menuBlock = { el: d.el, kind: d.kind };
+      $('#blk-menu-title').textContent = KIND_NAME[d.kind];
+      $('#bm-cols').hidden = d.kind !== 'section';
+      $('#bm-cols-label').textContent = d.el.classList.contains('two-col') ? 'One column' : 'Two columns';
+      const r = $('.bh-grip', handle).getBoundingClientRect();
+      openMenuAt($('#blk-menu'), r.left + scrollX, r.bottom + scrollY + 4, null);
+      return;
+    }
+    if (d.target) {
+      const from = d.el.parentElement;
+      record();
+      d.target.parentElement.insertBefore(d.el, d.before ? d.target : d.target.nextSibling);
+      if (d.kind === 'li') cleanList(from);
+      flash(d.el); afterBlockChange();
+    }
+  });
+  $('#blk-menu').addEventListener('mousedown', e => e.preventDefault());
+  $('#blk-menu').addEventListener('click', e => { const b = e.target.closest('[data-bm]'); if (!b || !menuBlock) return; closeMenu(); blockAction(menuBlock, b.dataset.bm); });
+
+  /* ---------- the pop-up bar on selected words ---------- */
+  const fbar = $('#float-bar');
+  const N_TEXT = [['default', '#37352F'], ['gray', '#787774'], ['brown', '#9F6B53'], ['orange', '#D9730D'], ['yellow', '#CB912F'], ['green', '#448361'], ['blue', '#337EA9'], ['purple', '#9065B0'], ['pink', '#C14C8A'], ['red', '#D44C47']];
+  const N_BG = [['default', '#FFFFFF'], ['gray', '#F1F1EF'], ['brown', '#F4EEEE'], ['orange', '#FBECDD'], ['yellow', '#FBF3DB'], ['green', '#EDF3EC'], ['blue', '#E7F3F8'], ['purple', '#F6F3F9'], ['pink', '#FAF1F5'], ['red', '#FDEBEC']];
+  const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+  $('#fb-text-sw').innerHTML = N_TEXT.map(([n, c]) => '<button class="n-sw" type="button" data-tc="' + n + '" style="--t:' + c + '" title="' + cap(n) + ' text" aria-label="' + cap(n) + ' text">A</button>').join('');
+  $('#fb-bg-sw').innerHTML = N_BG.map(([n, c]) => '<button class="n-sw" type="button" data-bg="' + n + '" style="--c:' + c + '" title="' + cap(n) + ' background" aria-label="' + cap(n) + ' background">A</button>').join('');
+  function hideFloat() { fbar.hidden = true; if (openMenuEl && (openMenuEl.id === 'fb-turn' || openMenuEl.id === 'fb-color')) closeMenu(); }
+  function positionFloat() {
+    if (readOnly || slash || drag || !state) { hideFloat(); return; }
+    const s = getSelection();
+    if (!s.rangeCount) { hideFloat(); return; }
+    const r = s.getRangeAt(0), ed = editableOf(r.commonAncestorContainer);
+    // Contact details get a link-only bar as soon as the cursor is in them; body text gets the full bar on a selection.
+    const contact = ed && ed.classList.contains('c-item');
+    if (!ed || (!contact && (!isRich(ed) || s.isCollapsed))) { if (!(openMenuEl && fbar.contains(openMenuBtn))) hideFloat(); return; }
+    const rect = (s.isCollapsed ? ed : r).getBoundingClientRect(); if (!rect.width && !rect.height) return;
+    fbar.classList.toggle('link-only', !!contact);
+    fbar.hidden = false; hideHandle();
+    const w = fbar.offsetWidth, h = fbar.offsetHeight, barBottom = $('#toolbar').getBoundingClientRect().bottom;
+    const x = Math.max(scrollX + 8, Math.min(rect.left + rect.width / 2 - w / 2 + scrollX, scrollX + innerWidth - w - 8));
+    const y = rect.top - h - 8 < barBottom + 4 ? rect.bottom + scrollY + 8 : rect.top + scrollY - h - 8;
+    fbar.style.left = x + 'px'; fbar.style.top = y + 'px';
+    updateFloatState();
+  }
+  function updateFloatState() {
+    if (fbar.hidden) return;
+    $$('[data-fstate]', fbar).forEach(b => { let on = false; try { on = document.queryCommandState(b.dataset.fstate); } catch (e) {} b.setAttribute('aria-pressed', on ? 'true' : 'false'); });
+    const b = caretBlock();
+    $('#fb-turn-label').textContent = !b ? 'Text' : b.tagName === 'LI' ? (b.parentElement.tagName === 'OL' ? 'Numbered list' : 'Bulleted list') : b.tagName === 'H3' ? 'Entry title' : b.tagName === 'H4' ? 'Entry details' : 'Text';
+  }
+  paper.addEventListener('mousedown', e => { HIST.typing = null; if (e.button === 0) { mouseSel = true; hideFloat(); } });
+  fbar.addEventListener('mousedown', e => e.preventDefault());
+  fbar.addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b) return;
+    if (b.dataset.fbm) {
+      const el = $('#' + b.dataset.fbm);
+      if (openMenuEl === el) { closeMenu(); return; }
+      const r = b.getBoundingClientRect(); openMenuAt(el, r.left + scrollX, r.bottom + scrollY + 6, b); return;
+    }
+    if (b.dataset.fcmd === 'link') { openLink(b); return; }
+    if (b.dataset.fcmd) { closeMenu(); exec(b.dataset.fcmd); requestAnimationFrame(positionFloat); }
+  });
+  ['#fb-turn', '#fb-color'].forEach(id => $(id).addEventListener('mousedown', e => { if (e.target.closest('button')) e.preventDefault(); }));
+  $('#fb-turn').addEventListener('click', e => { const b = e.target.closest('[data-turn]'); if (!b) return; closeMenu(); turnInto(b.dataset.turn); requestAnimationFrame(positionFloat); });
+  $('#fb-color').addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b) return; closeMenu();
+    if (b.dataset.tc) colourise('tc', b.dataset.tc); else if (b.dataset.bg) colourise('bg', b.dataset.bg);
+    requestAnimationFrame(positionFloat);
+  });
+
+  /* ---------- the "/" block menu ---------- */
+  const slashEl = $('#slash');
+  const SLASH = [
+    { g: 'Basic blocks', id: 'p', label: 'Text', sub: 'Plain body text', icon: 'Aa', keys: 'text paragraph body plain' },
+    { g: 'Basic blocks', id: 'h3', label: 'Entry title', sub: 'A job, school or project name', icon: 'H', keys: 'heading title role h3' },
+    { g: 'Basic blocks', id: 'h4', label: 'Entry details', sub: 'Company, dates, place', icon: 'h', keys: 'subheading details company dates h4' },
+    { g: 'Basic blocks', id: 'ul', label: 'Bulleted list', sub: 'A simple bulleted list', icon: '•', keys: 'bullet list ul' },
+    { g: 'Basic blocks', id: 'ol', label: 'Numbered list', sub: 'A list with numbers', icon: '1.', keys: 'numbered ordered list ol' },
+    { g: 'Basic blocks', id: 'hr', label: 'Divider', sub: 'A thin line between blocks', icon: '—', keys: 'divider line rule separator hr' },
+    { g: 'Resume blocks', id: 'entry', label: 'Job entry', sub: 'Title, details and a first bullet', icon: '+', keys: 'entry job role experience position item' },
+    { g: 'Resume blocks', id: 'section', label: 'Section', sub: 'A new labelled section', icon: '§', keys: 'section new block' }
+  ];
+  let slash = null, slashItems = [], slashActive = 0;
+  function slashQuery() {
+    if (!slash) return null;
+    const s = getSelection(); if (!s.rangeCount) return null;
+    const r = s.getRangeAt(0);
+    if (!r.collapsed || r.startContainer !== slash.node || r.startOffset <= slash.off || slash.node.data[slash.off] !== '/') return null;
+    return slash.node.data.slice(slash.off + 1, r.startOffset);
+  }
+  function renderSlash(q) {
+    const ql = q.toLowerCase();
+    slashItems = SLASH.filter(i => !ql || i.label.toLowerCase().includes(ql) || i.keys.includes(ql));
+    slashActive = Math.min(slashActive, Math.max(0, slashItems.length - 1));
+    let g = '';
+    slashEl.innerHTML = slashItems.length ? slashItems.map((i, n) => (i.g !== g ? '<div class="mh">' + (g = i.g) + '</div>' : '') +
+      '<button class="mi" type="button" role="option" data-si="' + n + '" aria-selected="' + (n === slashActive) + '"><span class="icon">' + i.icon + '</span><span class="mi-text"><span>' + i.label + '</span><span class="mi-sub">' + i.sub + '</span></span></button>').join('')
+      : '<div class="empty-note">No blocks match “' + esc(q) + '”. Press Esc to close.</div>';
+    const sel = $('[aria-selected="true"]', slashEl); if (sel) sel.scrollIntoView({ block: 'nearest' });
+  }
+  function openSlash() {
+    slashActive = 0; renderSlash('');
+    const r = document.createRange(); r.setStart(slash.node, slash.off); r.setEnd(slash.node, slash.off + 1);
+    const rect = r.getBoundingClientRect();
+    hideFloat(); hideHandle();
+    // Prefer opening below the line and shrinking to fit; flip above only when there is clearly more room, never over the bar.
+    const below = innerHeight - rect.bottom - 14, above = rect.top - $('#toolbar').getBoundingClientRect().bottom - 14;
+    const up = below < 220 && above > below;
+    slashEl.style.maxHeight = Math.max(150, Math.min(340, up ? above : below)) + 'px';
+    openMenuAt(slashEl, rect.left + scrollX, rect.bottom + scrollY + 6, null);
+    if (up) slashEl.style.top = (rect.top + scrollY - slashEl.offsetHeight - 6) + 'px';
+  }
+  function closeSlash() { slash = null; if (openMenuEl === slashEl) closeMenu(); slashEl.hidden = true; }
+  function chooseSlash(item) {
+    // One undo step for the whole thing: removing "/bul" and turning the line into the chosen block.
+    record();
+    restoring = true;
+    try {
+      const s = getSelection(), end = s.getRangeAt(0).startOffset;
+      const r = document.createRange(); r.setStart(slash.node, slash.off); r.setEnd(slash.node, end);
+      s.removeAllRanges(); s.addRange(r);
+      document.execCommand('delete');
+      closeSlash(); syncSelection();
+      if (item.id === 'p' || item.id === 'h3' || item.id === 'h4' || item.id === 'ul' || item.id === 'ol') turnInto(item.id);
+      else if (item.id === 'hr') document.execCommand('insertHorizontalRule');
+      else if (item.id === 'entry') addEntry();
+      else if (item.id === 'section') addSection();
+    } finally { restoring = false; }
+    markDirty();
+  }
+  paper.addEventListener('input', e => {
+    if (e.inputType === 'insertText' && e.data === '/') {
+      const s = getSelection(); if (!s.rangeCount) return;
+      const r = s.getRangeAt(0), node = r.startContainer, ed = editableOf(node);
+      if (!ed || !isRich(ed) || node.nodeType !== 3) return;
+      const off = r.startOffset - 1, prev = off > 0 ? node.data[off - 1] : '';
+      if (prev && !/[\s ]/.test(prev)) return;
+      slash = { node, off }; openSlash(); return;
+    }
+    if (slash) { const q = slashQuery(); if (q === null || q.length > 24) closeSlash(); else renderSlash(q); }
+  });
+  paper.addEventListener('keydown', e => {
+    if (!slash) return;
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      e.preventDefault(); if (!slashItems.length) return;
+      slashActive = (slashActive + (e.key === 'ArrowDown' ? 1 : -1) + slashItems.length) % slashItems.length;
+      renderSlash(slashQuery() || '');
+    } else if (e.key === 'Enter') { e.preventDefault(); e.stopPropagation(); if (slashItems[slashActive]) chooseSlash(slashItems[slashActive]); else closeSlash(); }
+    else if (e.key === 'Escape') { e.preventDefault(); closeSlash(); }
+  }, true);
+  slashEl.addEventListener('mousedown', e => e.preventDefault());
+  slashEl.addEventListener('click', e => { const b = e.target.closest('[data-si]'); if (b && slash) chooseSlash(slashItems[Number(b.dataset.si)]); });
+
+  /* ---------- the Style menu ---------- */
+  const styleBtn = $('#b-style'), styleMenu = $('#style-menu');
+  function renderFonts(q) {
+    q = (q || '').trim().toLowerCase();
+    const html = ['Sans', 'Serif', 'Mono'].map(g => {
+      const items = FONTS.filter(f => f[1] === g && f[0].toLowerCase().includes(q));
+      if (!items.length) return '';
+      return '<div class="mh">' + g + '</div>' + items.map(f => '<button class="font-opt" type="button" role="radio" data-font="' + f[0] + '" aria-checked="' + (pageStyle.font === f[0]) + '" style="font-family:\'' + f[0] + '\', ' + fallback(f[1]).replace(/"/g, "'") + '">' + f[0] + '<small>' + g + '</small></button>').join('');
+    }).join('');
+    $('#font-list').innerHTML = html || '<div class="empty-note">No font matches that name.</div>';
+  }
+  styleBtn.addEventListener('click', () => {
+    if (openMenuEl === styleMenu) { closeMenu(); return; }
+    FONTS.forEach(f => ensureFont(f[0])); // previews: each font loads once, the first time the menu opens
+    renderFonts($('#font-q').value);
+    const bar = $('#toolbar').getBoundingClientRect(), br = styleBtn.getBoundingClientRect();
+    closeMenu(); styleMenu.hidden = false;
+    styleMenu.style.left = Math.max(8, Math.min(br.left - bar.left, bar.width - styleMenu.offsetWidth - 8)) + 'px';
+    styleMenu.style.top = 'calc(100% + 4px)';
+    styleBtn.setAttribute('aria-expanded', 'true'); openMenuEl = styleMenu; openMenuBtn = styleBtn;
+  });
+  styleMenu.addEventListener('mousedown', e => { if (e.target.closest('button')) e.preventDefault(); });
+  styleMenu.addEventListener('click', e => {
+    const b = e.target.closest('[data-font]'); if (!b || readOnly) return;
+    if (b.dataset.font === pageStyle.font) return;
+    record(); pageStyle = { ...pageStyle, font: b.dataset.font }; applyStyle(); renderFonts($('#font-q').value); markDirty();
+  });
+  $('#font-q').addEventListener('input', e => renderFonts(e.target.value));
+  $('#small-text').addEventListener('change', e => { record(); pageStyle = { ...pageStyle, small: e.target.checked }; applyStyle(); markDirty(); });
+
+  function hideOverlays() { hideHandle(); hideFloat(); if (slash) closeSlash(); dropLine.hidden = true; }
 
   /* ---------- typing rules that keep the layout intact ----------
      Each rule records an undo step before it changes anything, so Ctrl+Z steps back through it cleanly.
@@ -949,7 +1492,8 @@ button, select, input, textarea { font: inherit; color: inherit; }
     const ed = editableOf(e.target);
     if (!ed) return;
     const mod = e.ctrlKey || e.metaKey;
-    if (/^(Arrow|Home|End|Page)/.test(e.key)) HIST.typing = null;
+    hideHandle();
+    if (/^(Arrow|Home|End|Page|Tab)/.test(e.key) || (mod && e.key.toLowerCase() === 'a')) HIST.typing = null;
     if (mod && e.key.toLowerCase() === 'k') { e.preventDefault(); openLink(); return; }
     if (ed.hasAttribute('data-single')) {
       if (e.key === 'Enter') { e.preventDefault(); return; }
@@ -963,27 +1507,25 @@ button, select, input, textarea { font: inherit; color: inherit; }
         record();
         document.execCommand('insertParagraph');
         document.execCommand('formatBlock', false, 'h4');
-        markDirty(); updateToolbar();
+        markDirty(); updateFloatState();
       }
     }
   });
   paper.addEventListener('input', e => {
     const ed = editableOf(e.target);
     if (!ed) return;
-    if (isRich(ed)) {
-      if (e.inputType === 'insertText' && e.data === ' ') {
-        const b = caretBlock();
-        if (b && (b.tagName === 'P' || b.tagName === 'DIV') && /^[-*•][\s ]$/.test(b.textContent)) {
-          record(); // undo first returns the typed "- ", like Google Docs
-          const r = document.createRange(); r.selectNodeContents(b);
-          const s = getSelection(); s.removeAllRanges(); s.addRange(r);
-          document.execCommand('delete');
-          document.execCommand('insertUnorderedList');
-        }
+    if (isRich(ed) && e.inputType === 'insertText' && e.data === ' ') {
+      const b = caretBlock();
+      if (b && (b.tagName === 'P' || b.tagName === 'DIV') && /^[-*•][\s ]$/.test(b.textContent)) {
+        record(); // undo first returns the typed "- ", like Google Docs
+        const r = document.createRange(); r.selectNodeContents(b);
+        const s = getSelection(); s.removeAllRanges(); s.addRange(r);
+        document.execCommand('delete');
+        document.execCommand('insertUnorderedList');
       }
     }
     markDirty();
-    updateToolbar();
+    updateFloatState();
   });
   paper.addEventListener('paste', e => {
     const ed = editableOf(e.target);
@@ -992,6 +1534,7 @@ button, select, input, textarea { font: inherit; color: inherit; }
     let text = (e.clipboardData && e.clipboardData.getData('text/plain')) || '';
     text = text.replace(/\r\n?/g, '\n');
     if (ed.hasAttribute('data-single')) text = text.replace(/\s*\n\s*/g, ' ');
+    if (!text) return;
     record();
     document.execCommand('insertText', false, text);
   });
@@ -1007,16 +1550,18 @@ button, select, input, textarea { font: inherit; color: inherit; }
     const css = $('#paper-css').textContent;
     const fonts = $('#paper-fonts').getAttribute('href');
     const arrow = $('#paper-arrow').getAttribute('href');
+    const chosen = s.style.font !== 'default' ? fontInfo(s.style.font) : null;
     const name = s.name ? s.name.toLowerCase().replace(/\b\w/g, c => c.toUpperCase()) : 'Resume';
     return '<!doctype html>\n<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">' +
-      '<title>' + esc(name) + ' — Resume</title><link rel="stylesheet" href="' + esc(fonts) + '"><link rel="stylesheet" href="' + esc(arrow) + '"><style>' + css +
+      '<title>' + esc(name) + ' — Resume</title><link rel="stylesheet" href="' + esc(fonts) + '"><link rel="stylesheet" href="' + esc(arrow) + '">' +
+      (chosen ? '<link rel="stylesheet" href="' + esc(fontHref(chosen)) + '">' : '') + '<style>' + css +
       '@page{size:A4;margin:0}html,body{margin:0;background:#FCFBF8}' +
       '.tip{font:14px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;color:#2b2b29;background:#fff;border-bottom:1px solid #ddd;padding:12px 16px;display:flex;gap:8px 14px;align-items:center;justify-content:center;flex-wrap:wrap}' +
       '.tip button{font:inherit;font-weight:600;padding:6px 14px;border-radius:6px;border:1px solid #2E5E8C;background:#2E5E8C;color:#fff;cursor:pointer}' +
       '@media screen{body{background:#E7E5E0}.paper{margin:24px auto;box-shadow:0 1px 2px rgba(0,0,0,.1),0 10px 30px rgba(0,0,0,.1)}}' +
       '@media print{.tip{display:none}.paper{margin:0;min-height:296mm}}' +
       '</style></head><body><div class="tip">To make your PDF: press the button, pick <b>Save as PDF</b>, paper size <b>A4</b>, margins <b>None</b>.' +
-      ' <button type="button" onclick="window.print()">Save as PDF</button></div><article class="paper">' + paperHtml(s, false) + '</article></body></html>';
+      ' <button type="button" onclick="window.print()">Save as PDF</button></div><article class="paper" style="' + esc(styleVars(s.style)) + '">' + paperHtml(s, false) + '</article></body></html>';
   }
   $('#b-download').addEventListener('click', async () => {
     if (!downloadsApi) { toast('Downloads are not available in this view. Ask Claude for the PDF instead.'); return; }
@@ -1039,7 +1584,7 @@ button, select, input, textarea { font: inherit; color: inherit; }
     try { stashed = normalize(JSON.parse(stashJson)); } catch (e) { return; }
     $('#banner-text').textContent = 'Your last edits did not save, because this resume was changed somewhere else at the same moment.';
     $('#banner').hidden = false;
-    $('#banner-yes').onclick = () => { record(); state = stashed; render(); $('#banner').hidden = true; markDirty(); };
+    $('#banner-yes').onclick = () => { record(); state = stashed; pageStyle = { ...stashed.style }; render(); $('#banner').hidden = true; markDirty(); };
     $('#banner-no').onclick = () => { $('#banner').hidden = true; try { sessionStorage.removeItem(STASH); } catch (e) {} };
   }
   async function boot() {
@@ -1054,6 +1599,7 @@ button, select, input, textarea { font: inherit; color: inherit; }
       return;
     }
     state = normalize(data);
+    pageStyle = { ...state.style };
     render();
     if (!BARE) {
       let stash = null;
@@ -1063,7 +1609,7 @@ button, select, input, textarea { font: inherit; color: inherit; }
         else offerRestore(stash);
       }
     }
-    updateToolbar(); updateHistoryButtons();
+    updateHistoryButtons();
     connect();
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(updatePageGuide);
   }
