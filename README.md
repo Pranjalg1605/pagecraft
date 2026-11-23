@@ -39,7 +39,12 @@ Double-click **Open Pagecraft.cmd**. A small window opens and your browser goes 
 http://localhost:4321/. Keep the small window open while you use Pagecraft; close it to stop.
 Only this computer can open that address. It needs Node.js, which is already installed here.
 
-## Going public
+## Live page
 
-Pagecraft stays private until it supports multiple users, each with their own account and their own
-documents, where no one can see or reach anyone else's data.
+Pagecraft is live at **https://pranjalg1605.github.io/pagecraft/**. It updates by itself a minute or two
+after each change reaches GitHub.
+
+On the live page, edits stay in that browser tab only and Download does not work yet (see Known limits).
+
+Before Pagecraft holds anyone else's documents, it needs sign-in and separate storage for each person,
+so that no one can see or reach anyone else's data.

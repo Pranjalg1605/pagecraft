@@ -7,9 +7,11 @@ A document editor for print-ready pages, starting with Pranjal's resume. Persona
 - **Local folder:** `C:\Important\pagecraft`. Deliberately on the C drive, outside the user folder: Pranjal
   asked for it there on 2026-11-22 (it briefly sat at `C:\Users\Pranjal Gupta\pagecraft` first). His work
   projects live on `G:\Claude Project\`; this one is the exception. Do not move it to G.
-- **GitHub:** his **personal** account `Pranjalg1605`, never his work account (the default `gh` sign-in on this computer).
-  Repo: https://github.com/Pranjalg1605/pagecraft — **private** (the resume data holds his phone number
-  and personal email).
+- **GitHub:** his **personal** account `Pranjalg1605`, never his work account (the default `gh` sign-in on
+  this computer). Never write the work account's name in this repo: the repo is public and that name
+  reveals his employer.
+  Repo: https://github.com/Pranjalg1605/pagecraft — **public** since 2026-11-23, his call: "it's my resume
+  only and it's out there anyways" (it holds his phone number and personal email, on purpose).
 - **Two accounts on one machine:** the work account stays the default (`gh auth status`) so his work
   projects push as work. This folder's own git settings point GitHub sign-in at the personal account
   (`gh auth token --user Pranjalg1605`), so `git push` / `git pull` here just work. The `gh` command does
@@ -84,12 +86,25 @@ version is "Pranjal Gupta — Resume" (https://claude.ai/artifact/AcDkY2RDcn3Ay5
   only the project folder, hides dot-files (`.git`), and sends `charset=utf-8` — which fixes the garbled
   title dash when served.
 
-## Going public — his rule (2026-11-22)
+## Deployment
 
-**Stays private until Pagecraft has real multi-user support.** Pranjal will make it public only when
-there are multiple users, each with their own account and their own documents, and no user can see or
-reach another user's data. So before any public launch: sign-in, per-user storage, and data separation
-must exist and be tested. Until then: local link only, private GitHub project.
+Repo: https://github.com/Pranjalg1605/pagecraft
+Live URL: https://pranjalg1605.github.io/pagecraft/ (opens `resume.html` through `index.html`)
+
+- Published with GitHub Pages by `.github/workflows/deploy.yml`: every push to `main` puts the live page
+  up again within a minute or two. The whole folder is served as it is; there is no build step.
+- **What the live page does today (he chose to go live as is, 2026-11-23):** it shows his resume and
+  lets a visitor edit it in their own browser tab. Nothing saves (the status reads "Preview — changes are
+  not saved"), and Download shows "Downloads are not available in this view". Both need the Claude
+  artifact viewer; making them work on their own is the next piece of work.
+
+## Going public — his rules
+
+- **2026-11-22:** stay private until Pagecraft supports multiple users, each with their own account and
+  documents, where no one can see or reach anyone else's data.
+- **2026-11-23, replaced by his own call:** the repo is public and the editor is live, holding only his
+  resume. The multi-user rule still stands for **other people's data**: before Pagecraft accepts anyone
+  else's documents, sign-in, per-user storage and data separation must exist and be tested.
 
 ## Direction
 
